@@ -93,7 +93,7 @@
                         <option value="1">1. 김단엘</option><option value="2">2. 김라희</option><option value="3">3. 김민지</option>
                         <option value="4">4. 김정훈</option><option value="5">5. 박문경</option><option value="6">6. 박소윤</option>
                         <option value="7">7. 박하율</option><option value="8">8. 박현수</option><option value="9">9. 백시율</option>
-                        <option value="10">10. 임은영</option><option value="11">11. 조이담</option><option value="12">12. 황훈태</option>
+                        <option value="10">10. 조이담</option><option value="11">11. 황훈태</option><option value="12">12. 임은영</option>
                         <option disabled>─── 관리자 ───</option>
                         <option value="gm" class="text-sb-gold">👑 마스터 J (담임교사)</option>
                     </select>
@@ -124,7 +124,7 @@
             <div class="flex items-center justify-between h-14 sm:h-16">
                 <div class="flex items-center gap-2 sm:gap-3">
                     <i class="fa-solid fa-gamepad text-xl sm:text-2xl text-sb-gold"></i>
-                    <span class="font-display text-lg sm:text-2xl text-white tracking-wider">SAMBONG WORLD <span class="text-[10px] sm:text-xs text-sb-red ml-1 sm:ml-2">v4.0</span></span>
+                    <span class="font-display text-lg sm:text-2xl text-white tracking-wider">SAMBONG WORLD <span class="text-[10px] sm:text-xs text-sb-red ml-1 sm:ml-2">v5.0</span></span>
                 </div>
                 <div class="flex items-center space-x-2 sm:space-x-4">
                     <div id="saveStatus" class="hidden text-[10px] sm:text-xs text-slate-400 items-center gap-1.5 sm:gap-2 bg-slate-800 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-slate-700">
@@ -151,7 +151,7 @@
             <h1 class="text-2xl sm:text-5xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-sb-gold to-yellow-200 drop-shadow-lg whitespace-nowrap tracking-tight">플레이어 공식 가이드</h1>
             <p class="text-sm sm:text-xl text-slate-400 max-w-2xl mx-auto break-keep px-2">삼봉초등학교 6학년 1반의 GM(선생님)과 플레이어(학생)들을 위한 규칙서입니다. 매일 성실하게 활동하여 전설의 마스터가 되어보세요.</p>
             <div class="inline-flex flex-wrap justify-center items-center gap-2 sm:gap-3 bg-indigo-500/20 text-indigo-300 border border-indigo-500 px-3 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-[10px] sm:text-sm">
-                <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i> [v4.0 대규모 패치] 광장 터치 즉각 보상 추가, 일괄지급 및 방패 시스템 완벽 연동!
+                <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i> [v5.0 대규모 패치] 기본 얼굴 고정 + 펫(알➔불새) 진화 도입 & 얼굴(Face) 커스텀 스킨 상점 오픈!
             </div>
         </header>
 
@@ -160,6 +160,15 @@
             <div class="mb-4 sm:mb-8">
                 <h2 class="text-2xl sm:text-3xl font-display text-sb-red flex items-center gap-2 sm:gap-3"><i class="fa-solid fa-eye"></i> 마스터 관찰구역</h2>
                 <p class="text-xs sm:text-sm text-slate-400 mt-1 sm:mt-2">12명 플레이어의 실시간 데이터 및 일괄/개별 편집 패널입니다. (전자칠판 터치 최적화)</p>
+            </div>
+
+            <!-- ★ 전담 레이드 비밀번호 설정 패널 ★ -->
+            <div class="glass-panel p-4 sm:p-6 rounded-2xl mb-4 border border-purple-500/50 shadow-[0_0_15px_rgba(168,85,247,0.1)] flex justify-between items-center">
+                <div>
+                    <h3 class="text-white font-bold flex items-center text-sm sm:text-base"><i class="fa-solid fa-key text-purple-400 mr-2"></i> 전담교사 레이드 비밀번호</h3>
+                    <p class="text-[10px] sm:text-xs text-slate-400 mt-1">현재 설정된 비밀번호: <span id="currentRaidPwDisplay" class="text-purple-300 font-bold tracking-widest text-base sm:text-lg ml-1">1234</span></p>
+                </div>
+                <button onclick="window.setRaidPassword()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-3 sm:px-4 rounded-xl shadow transition text-xs sm:text-sm whitespace-nowrap">변경하기</button>
             </div>
             
             <!-- 마스터 일괄 지급/차감 패널 -->
@@ -305,9 +314,9 @@
                     <!-- 스킨 상점 -->
                     <div class="glass-panel p-4 sm:p-6 rounded-2xl border-t-4 border-t-pink-500">
                         <h3 class="font-bold text-lg sm:text-xl mb-3 sm:mb-4 border-b border-slate-700 pb-2 flex justify-between items-end">
-                            <span><i class="fa-solid fa-shirt text-pink-400 mr-2"></i> 스킨 부티크 (아이템 & 오라)</span>
+                            <span><i class="fa-solid fa-shirt text-pink-400 mr-2"></i> 스킨 부티크 (얼굴/아이템/오라)</span>
                         </h3>
-                        <div id="skinContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-h-80 overflow-y-auto pr-2"></div>
+                        <div id="skinContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-h-96 overflow-y-auto pr-2"></div>
                     </div>
 
                     <div class="glass-panel p-4 sm:p-6 rounded-2xl">
@@ -322,7 +331,7 @@
 
         <footer class="text-center text-slate-500 py-8 sm:py-12 border-t border-slate-800 px-4 mt-12 sm:mt-20">
             <p class="font-display text-lg sm:text-2xl text-slate-300 mb-2 sm:mb-4 break-keep">"당신의 모든 행동은 데이터가 되어 당신을 성장시킵니다."</p>
-            <p class="text-xs sm:text-sm font-bold text-emerald-400">- SAMBONG WORLD 마스터 J -</p>
+            <p class="text-xs sm:text-sm font-bold text-emerald-400">- 삼봉월드 창조자 마스터 J -</p>
         </footer>
     </div>
 
@@ -370,19 +379,31 @@
             { id: 'q5', type: 'locked', name: '전투력 측정 (보스전)', desc: '단원평가 및 수행평가 성적 향상', xp: 500, bong: 20.0, icon: 'fa-scroll', color: 'text-red-300' }
         ];
 
-        // 7색상 테두리 오라 스킨
+        // ★ 오버레이 스킨 및 신규 페이스 스킨 분류 (type 속성 추가) ★
         const SKIN_DATA = [
-            { id: 'sk1', name: '마법사 모자', desc: '지능 상승의 모자', price: 150, emoji: '🎩', border: '', glow: '' },
-            { id: 'sk2', name: '선글라스', desc: '인싸의 기본 소양', price: 200, emoji: '🕶️', border: '', glow: '' },
-            { id: 'sk3', name: '다이아 귀걸이', desc: '매력 스탯 증가', price: 300, emoji: '💎', border: '', glow: '' },
-            { id: 'sk4', name: '헤드폰', desc: '소음 완벽 차단', price: 250, emoji: '🎧', border: '', glow: '' },
-            { id: 'sk_red', name: '레드 오라', desc: '불타는 열정 테두리', price: 150, emoji: '🔴', border: 'border-red-500', glow: 'shadow-[0_0_15px_rgba(239,68,68,0.7)]' },
-            { id: 'sk_org', name: '오렌지 오라', desc: '상큼한 활력 테두리', price: 150, emoji: '🟠', border: 'border-orange-500', glow: 'shadow-[0_0_15px_rgba(249,115,22,0.7)]' },
-            { id: 'sk_yel', name: '옐로우 오라', desc: '찬란한 빛 테두리', price: 150, emoji: '🟡', border: 'border-yellow-400', glow: 'shadow-[0_0_15px_rgba(250,204,21,0.7)]' },
-            { id: 'sk_grn', name: '그린 오라', desc: '대자연의 테두리', price: 150, emoji: '🟢', border: 'border-green-500', glow: 'shadow-[0_0_15px_rgba(34,197,94,0.7)]' },
-            { id: 'sk_blu', name: '블루 오라', desc: '심연의 바다 테두리', price: 150, emoji: '🔵', border: 'border-blue-500', glow: 'shadow-[0_0_15px_rgba(59,130,246,0.7)]' },
-            { id: 'sk_wht', name: '화이트 오라', desc: '순백의 순수 테두리', price: 150, emoji: '⚪', border: 'border-white', glow: 'shadow-[0_0_15px_rgba(255,255,255,0.7)]' },
-            { id: 'sk_blk', name: '다크 오라', desc: '어둠의 그림자 테두리', price: 150, emoji: '⚫', border: 'border-slate-900', glow: 'shadow-[0_0_15px_rgba(0,0,0,0.9)]' }
+            // 얼굴(Face) - 400~600B
+            { id: 'f_ninja', type: 'face', name: '닌자 (남/여 공용)', desc: '어둠의 암살자 얼굴', price: 400, emoji: '🥷' },
+            { id: 'f_fairy', type: 'face', name: '숲의 요정 (여)', desc: '신비로운 요정의 얼굴', price: 450, emoji: '🧚‍♀️' },
+            { id: 'f_astroM', type: 'face', name: '우주 탐험가 (남)', desc: '미지의 세계로', price: 450, emoji: '👨‍🚀' },
+            { id: 'f_vamp', type: 'face', name: '뱀파이어 백작 (남)', desc: '매혹적인 밤의 얼굴', price: 500, emoji: '🧛‍♂️' },
+            { id: 'f_mer', type: 'face', name: '심해의 인어 (여)', desc: '아름다운 바다의 얼굴', price: 500, emoji: '🧜‍♀️' },
+            { id: 'f_king', type: 'face', name: '위대한 국왕 (남)', desc: '왕국을 통치하는 자', price: 600, emoji: '🤴' },
+            { id: 'f_queen', type: 'face', name: '우아한 여왕 (여)', desc: '왕국을 통치하는 자', price: 600, emoji: '👸' },
+            
+            // 오버레이(Overlay)
+            { id: 'sk1', type: 'overlay', name: '마법사 모자', desc: '지능 상승의 모자', price: 150, emoji: '🎩', overlayClass: 'top-[-0.6em] right-[-0.2em] text-[0.8em] rotate-[15deg]' },
+            { id: 'sk2', type: 'overlay', name: '선글라스', desc: '인싸의 기본 소양', price: 200, emoji: '🕶️', overlayClass: 'top-[0.25em] left-[-0.05em] text-[1.1em]' },
+            { id: 'sk3', type: 'overlay', name: '다이아 귀걸이', desc: '매력 스탯 증가', price: 300, emoji: '💎', overlayClass: 'bottom-[0.1em] right-[-0.2em] text-[0.5em]' },
+            { id: 'sk4', type: 'overlay', name: '헤드폰', desc: '소음 완벽 차단', price: 250, emoji: '🎧', overlayClass: 'top-[-0.1em] left-[-0.05em] text-[1.1em]' },
+            
+            // 오라(Aura)
+            { id: 'sk_red', type: 'aura', name: '레드 오라', desc: '불타는 열정 테두리', price: 150, emoji: '🔴', border: 'border-red-500', glow: 'shadow-[0_0_15px_rgba(239,68,68,0.7)]' },
+            { id: 'sk_org', type: 'aura', name: '오렌지 오라', desc: '상큼한 활력 테두리', price: 150, emoji: '🟠', border: 'border-orange-500', glow: 'shadow-[0_0_15px_rgba(249,115,22,0.7)]' },
+            { id: 'sk_yel', type: 'aura', name: '옐로우 오라', desc: '찬란한 빛 테두리', price: 150, emoji: '🟡', border: 'border-yellow-400', glow: 'shadow-[0_0_15px_rgba(250,204,21,0.7)]' },
+            { id: 'sk_grn', type: 'aura', name: '그린 오라', desc: '대자연의 테두리', price: 150, emoji: '🟢', border: 'border-green-500', glow: 'shadow-[0_0_15px_rgba(34,197,94,0.7)]' },
+            { id: 'sk_blu', type: 'aura', name: '블루 오라', desc: '심연의 바다 테두리', price: 150, emoji: '🔵', border: 'border-blue-500', glow: 'shadow-[0_0_15px_rgba(59,130,246,0.7)]' },
+            { id: 'sk_wht', type: 'aura', name: '화이트 오라', desc: '순백의 순수 테두리', price: 150, emoji: '⚪', border: 'border-white', glow: 'shadow-[0_0_15px_rgba(255,255,255,0.7)]' },
+            { id: 'sk_blk', type: 'aura', name: '다크 오라', desc: '어둠의 그림자 테두리', price: 150, emoji: '⚫', border: 'border-slate-900', glow: 'shadow-[0_0_15px_rgba(0,0,0,0.9)]' }
         ];
 
         // 상점
@@ -397,25 +418,36 @@
             { id: 's7', name: '레전더리 타임', desc: '학급 전체 자유시간! 돈을 모아 구매하세요.', price: 2000, icon: 'fa-crown', iconColor: 'text-sb-red' }
         ];
 
+        // ★ 동반자(펫) 진화 시스템 (알 -> 피닉스) 도입 ★
+        // 기본 얼굴은 👦/👧 로 고정, prop(펫)이 레벨에 따라 진화합니다.
         const LEVEL_DATA = [
-            { max: 1499, name: '새내기', emoji: '🥺🪵', borderColor: 'border-slate-600', bgColor: 'bg-slate-800', textColor: 'text-slate-400', anim: 'avatar-bounce' },
-            { max: 4499, name: '초보', emoji: '😐🗡️', borderColor: 'border-sb-green', bgColor: 'bg-green-900/30', textColor: 'text-sb-green', anim: 'avatar-bounce' },
-            { max: 9999, name: '중수', emoji: '😠⚔️', borderColor: 'border-blue-400', bgColor: 'bg-blue-900/30', textColor: 'text-blue-400', anim: 'avatar-bounce' },
-            { max: 21999, name: '고수', emoji: '😎🛡️', borderColor: 'border-yellow-500', bgColor: 'bg-yellow-900/30', textColor: 'text-yellow-500', anim: 'avatar-flex' },
-            { max: 39999, name: '수호자', emoji: '🦸‍♂️✨', borderColor: 'border-purple-500', bgColor: 'bg-purple-900/30', textColor: 'text-purple-400', anim: 'avatar-float' },
-            { max: Infinity, name: '전설', emoji: '👑🐉', borderColor: 'border-sb-red', bgColor: 'bg-red-900/30', textColor: 'text-sb-red', anim: 'avatar-legend' }
+            { max: 1499, name: '새내기', prop: '🥚', borderColor: 'border-slate-600', bgColor: 'bg-slate-800', textColor: 'text-slate-400', anim: 'avatar-bounce' },
+            { max: 4499, name: '초보', prop: '🐣', borderColor: 'border-sb-green', bgColor: 'bg-green-900/30', textColor: 'text-sb-green', anim: 'avatar-bounce' },
+            { max: 9999, name: '중수', prop: '🐥', borderColor: 'border-blue-400', bgColor: 'bg-blue-900/30', textColor: 'text-blue-400', anim: 'avatar-bounce' },
+            { max: 21999, name: '고수', prop: '🦅', borderColor: 'border-yellow-500', bgColor: 'bg-yellow-900/30', textColor: 'text-yellow-500', anim: 'avatar-flex' },
+            { max: 39999, name: '수호자', prop: '☄️', borderColor: 'border-purple-500', bgColor: 'bg-purple-900/30', textColor: 'text-purple-400', anim: 'avatar-float' },
+            { max: Infinity, name: '전설', prop: '🐦‍🔥', borderColor: 'border-sb-red', bgColor: 'bg-red-900/30', textColor: 'text-sb-red', anim: 'avatar-legend' }
         ];
 
         const STUDENT_NAMES = {
             "1": "김단엘", "2": "김라희", "3": "김민지", "4": "김정훈",
             "5": "박문경", "6": "박소윤", "7": "박하율", "8": "박현수",
-            "9": "백시율", "10": "임은영", "11": "조이담", "12": "황훈태",
+            "9": "백시율", "10": "조이담", "11": "황훈태", "12": "임은영",
             "gm": "마스터 J", "guest": "손님 (Guest)"
+        };
+
+        // ★ 성별 지정 (F: 여학생, M: 남학생) ★
+        const STUDENT_GENDERS = {
+            "1": "M", "2": "F", "3": "F", "4": "M",
+            "5": "M", "6": "F", "7": "F", "8": "M",
+            "9": "M", "10": "M", "11": "M", "12": "F",
+            "gm": "M", "guest": "M"
         };
 
         window.playerState = { xp: 0, bong: 0.0, quests: {}, unlockedQuests: {}, jobs: [], ownedSkins: {}, equippedSkins: {}, hasShield: false, isGuest: false, isGM: false };
         window.allStudentsData = []; 
         window.gmData = null;
+        window.globalSettings = { raidPassword: '1234' };
         let db, auth, currentStudentDocRef = null;
         let unsubscribeGlobal = null;
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'sambong-class-2026';
@@ -473,7 +505,7 @@
 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
-                        // ★ 핵심: 누구나 광장 데이터를 볼 수 있도록 글로벌 Snapshot 유지 ★
+                        // 글로벌 Snapshot 유지
                         if (unsubscribeGlobal) unsubscribeGlobal();
                         unsubscribeGlobal = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'students'), (snapshot) => {
                             const students = [];
@@ -485,14 +517,18 @@
                             window.allStudentsData = students;
                             window.gmData = gmD;
                             
-                            // GM이면 테이블 리렌더링
-                            if (window.playerState && window.playerState.isGM) {
-                                window.renderAdminTable(students);
-                            }
-                            // 누구나 광장 리렌더링
+                            if (window.playerState && window.playerState.isGM) window.renderAdminTable(students);
                             window.renderPlaza(students, gmD);
-                        }, (error) => {
-                            console.error("데이터 동기화 에러 (규칙 문제일 수 있습니다):", error);
+                        }, (error) => { console.error("데이터 동기화 에러:", error); });
+
+                        // 글로벌 셋팅(레이드 패스워드 등) 연동
+                        const settingsRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global');
+                        onSnapshot(settingsRef, (snap) => {
+                            if (snap.exists()) {
+                                window.globalSettings = snap.data();
+                                const pwDisplay = document.getElementById('currentRaidPwDisplay');
+                                if (pwDisplay) pwDisplay.innerText = window.globalSettings.raidPassword || '1234';
+                            }
                         });
 
                         const savedId = localStorage.getItem('sambong_student_id');
@@ -518,7 +554,6 @@
             let html = '';
 
             const createCard = (data, isGMCard, idLabel) => {
-                // 클릭 이벤트 및 커서 효과 (GM일 때만 작동, 본인 카드는 제외)
                 const emptyId = idLabel.split('.')[0].trim();
                 const targetId = data ? data.id : emptyId;
                 const gmOnClick = window.playerState.isGM && !isGMCard ? `onclick="window.plazaClickXP('${targetId}', this)"` : '';
@@ -536,14 +571,21 @@
                 const isMe = (window.playerState.isGM && isGMCard) || (!window.playerState.isGM && !isGMCard && data.id === mySavedId);
                 const displayData = isMe ? { ...data, ...window.playerState } : data;
                 const lv = getLevelInfo(displayData.xp || 0);
-                const meHighlight = isMe ? 'ring-2 ring-white scale-105 z-10' : '';
+                const meHighlight = isMe ? 'ring-2 ring-white z-10' : '';
 
-                let equippedEmojis = ''; let customBorder = ''; let customGlow = '';
+                // ★ 성별 고정 얼굴 + 스킨 상점/오버레이 로직 적용 ★
+                const gender = STUDENT_GENDERS[targetId] || 'M';
+                let faceEmoji = gender === 'F' ? '👧' : '👦'; // 기본 고정 얼굴
+                let propEmoji = lv.info.prop; // 펫 진화
+
+                let skinOverlays = ''; let customBorder = ''; let customGlow = '';
+                
                 if (displayData.equippedSkins) {
                     SKIN_DATA.forEach(s => {
                         if (displayData.equippedSkins[s.id]) {
-                            if(s.emoji && !s.border) equippedEmojis += s.emoji;
-                            if(s.border) { customBorder = s.border; customGlow = s.glow; }
+                            if (s.type === 'face') faceEmoji = s.emoji; // 커스텀 얼굴 장착 시 변경
+                            else if (s.type === 'overlay') skinOverlays += `<span class="absolute ${s.overlayClass} z-20 drop-shadow-md pointer-events-none">${s.emoji}</span>`;
+                            else if (s.type === 'aura') { customBorder = s.border; customGlow = s.glow; }
                         }
                     });
                 }
@@ -552,25 +594,30 @@
 
                 if (isGMCard) {
                     const border = customBorder || 'border-sb-gold';
-                    const glow = customGlow || 'shadow-[0_0_20px_rgba(251,191,36,0.4)]';
-                    return `<div class="flex flex-col items-center p-3 sm:p-4 rounded-xl border-2 w-32 sm:w-40 relative transition-all duration-300 ${glow} ${border} bg-slate-900 ${meHighlight}">${shieldHtml}
-                        <div class="relative mb-2 flex flex-col items-center">
-                            <div class="text-4xl sm:text-5xl avatar-legend relative z-10">👑🐉</div>
-                            <div class="absolute -bottom-2 text-[10px] sm:text-sm bg-slate-900/80 px-1.5 py-0.5 rounded-full shadow border border-slate-600 empty:hidden z-20">${equippedEmojis}</div>
+                    const glow = customGlow || 'shadow-[0_0_25px_rgba(251,191,36,0.6)]';
+                    // ★ 마스터 카드 사이즈 확대 및 드래곤 폼 변경 ★
+                    return `<div class="flex flex-col items-center p-4 sm:p-5 rounded-2xl border-2 w-36 sm:w-48 relative transition-all duration-300 ${glow} ${border} bg-slate-900 ${meHighlight} transform sm:scale-105 mx-2 z-10">${shieldHtml}
+                        <div class="relative mb-3 flex flex-col items-center">
+                            <div class="text-5xl sm:text-6xl avatar-legend flex items-center justify-center relative z-10 drop-shadow-[0_0_15px_rgba(251,191,36,0.8)]">
+                                🐉<span class="absolute -bottom-2 -right-2 text-2xl sm:text-3xl">🔥</span>
+                            </div>
                         </div>
-                        <div class="text-[9px] sm:text-[10px] font-black mb-1 mt-1 text-sb-gold tracking-widest">세계관 창조자</div>
-                        <div class="font-bold text-white bg-slate-800 px-2 py-0.5 sm:py-1 rounded-md text-[10px] sm:text-xs whitespace-nowrap border border-sb-gold/50 w-full text-center">마스터 J</div>
+                        <div class="text-[10px] sm:text-xs font-black mb-1 mt-1 text-sb-gold tracking-widest">삼봉월드 창조자</div>
+                        <div class="font-bold text-slate-900 bg-gradient-to-r from-sb-gold to-yellow-300 px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm whitespace-nowrap border border-sb-gold/50 w-full text-center shadow-lg">마스터 J</div>
                     </div>`;
                 } else {
                     const border = customBorder || lv.info.borderColor;
                     const glow = customGlow || 'shadow-md';
                     const jobsHtml = (displayData.jobs || []).map((j, i) => `<div class="job-badge ${j.color} w-4 h-4 sm:w-5 sm:h-5" style="z-index: ${10 - i}"><i class="fa-solid ${j.icon} text-[8px] sm:text-[10px]"></i></div>`).join('');
 
+                    // 학생들 펫 진화 폼 적용
                     return `<div ${gmOnClick} class="flex flex-col items-center p-3 sm:p-4 rounded-xl border-2 w-[104px] sm:w-36 relative transition-all duration-300 ${glow} ${border} ${lv.info.bgColor} ${meHighlight} ${gmCursor}">${shieldHtml}
                         <div class="badge-container gap-1">${jobsHtml}</div>
                         <div class="relative mb-2 flex flex-col items-center">
-                            <div class="text-4xl sm:text-5xl avatar-bounce transition-all duration-300 ${lv.info.anim}">${lv.info.emoji}</div>
-                            <div class="absolute -bottom-2 text-[10px] sm:text-sm bg-slate-900/80 px-1.5 py-0.5 rounded-full shadow border border-slate-600 empty:hidden z-20">${equippedEmojis}</div>
+                            <div class="text-4xl sm:text-5xl transition-all duration-300 ${lv.info.anim} flex items-end justify-center gap-1 relative z-10">
+                                <div class="relative inline-block leading-none">${faceEmoji}${skinOverlays}</div>
+                                <div class="text-[0.6em] leading-none mb-1 animate-pulse">${propEmoji}</div>
+                            </div>
                         </div>
                         <div class="text-[9px] sm:text-[10px] font-bold mb-1 mt-1 ${lv.info.textColor}">${lv.info.name}</div>
                         <div class="font-bold text-white bg-slate-900 px-2 py-0.5 sm:py-1 rounded-md text-[10px] sm:text-xs whitespace-nowrap w-full text-center truncate">${idLabel}</div>
@@ -579,6 +626,7 @@
                 }
             };
 
+            // GM 카드가 중간이나 잘 보이게 맨 앞으로 배치합니다.
             html += createCard(gmData, true, '마스터 J');
             for(let i=1; i<=12; i++) {
                 const stu = studentsData.find(s => s.id === String(i));
@@ -604,6 +652,12 @@
                     let iconHtml = q.icon ? `<i class="fa-solid ${q.icon} text-slate-500 mr-2"></i>` : '';
                     let clickAction = `window.attemptQuest('${q.id}', ${q.xp}, ${q.bong})`;
                     let checkMark = ''; let titleAddon = '';
+
+                    // ★ 일일 출석 잭팟 진행도 표시 ★
+                    if (q.id === 'q1') {
+                        const streak = window.playerState.earlyBirdCount || 0;
+                        titleAddon = ` <span class="text-orange-400 text-[10px] sm:text-xs ml-2 tracking-tighter bg-orange-900/30 px-1.5 py-0.5 rounded-md">(🔥 ${streak}/5)</span>`;
+                    }
 
                     if (isCompleted) {
                         stateClass = "border-sb-blue bg-slate-800/90 active cursor-pointer hover:bg-slate-800";
@@ -686,7 +740,7 @@
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
                 osc.connect(gain); gain.connect(audioCtx.destination);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-            } catch(e) { console.log('Audio error:', e); }
+            } catch(e) { }
         }
         function playCoinSound() {
             try {
@@ -701,8 +755,43 @@
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
                 osc.connect(gain); gain.connect(audioCtx.destination);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-            } catch(e) { console.log('Audio error:', e); }
+            } catch(e) { }
         }
+        function playJackpotSound() {
+            try {
+                initAudio();
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1);
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.1 + 0.3);
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + i * 0.1);
+                    osc.stop(audioCtx.currentTime + i * 0.1 + 0.3);
+                });
+            } catch(e) {}
+        }
+        
+        window.triggerConfetti = function() {
+            const colors = ['#fbbf24', '#3b82f6', '#ef4444', '#10b981', '#a855f7'];
+            for(let i=0; i<100; i++) {
+                const conf = document.createElement('div');
+                conf.className = 'fixed w-3 h-3 z-[300] top-0 rounded-sm pointer-events-none';
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.transform = `rotate(${Math.random() * 360}deg)`;
+                document.body.appendChild(conf);
+                const duration = Math.random() * 2 + 1;
+                conf.animate([
+                    { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
+                    { transform: `translate3d(${Math.random()*200 - 100}px, 100vh, 0) rotate(${Math.random()*720}deg)`, opacity: 0 }
+                ], { duration: duration * 1000, easing: 'cubic-bezier(.37,0,.63,1)' });
+                setTimeout(() => conf.remove(), duration * 1000);
+            }
+        };
 
         window.customAlert = (m) => new Promise(r => {
             const d = document.createElement('div'); d.className = "fixed inset-0 z-[200] flex items-center justify-center bg-black/80 px-4";
@@ -754,15 +843,30 @@
             if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드에서는 퀘스트를 체크할 수 없습니다.");
             if (window.playerState.quests[qId]) return;
 
+            let finalXp = xp; let finalBong = bong; let isEarlyBirdJackpot = false;
+
+            if (qId === 'q1') {
+                window.playerState.earlyBirdCount = (window.playerState.earlyBirdCount || 0) + 1;
+                const today = new Date().getDay(); 
+                if (today === 5 && window.playerState.earlyBirdCount >= 5) {
+                    finalXp += 20; isEarlyBirdJackpot = true; window.playerState.earlyBirdCount = 0; 
+                }
+            }
+
             const oldLevelIndex = getLevelInfo(window.playerState.xp).index;
-            window.playerState.xp += xp; window.playerState.bong += bong; window.playerState.quests[qId] = true;
+            window.playerState.xp += finalXp; window.playerState.bong += finalBong; window.playerState.quests[qId] = true;
             const newLevelIndex = getLevelInfo(window.playerState.xp).index;
+
+            if (isEarlyBirdJackpot) {
+                playJackpotSound(); window.triggerConfetti();
+                await window.customAlert(`🎊 [금요일 스페셜 보너스] 🎊\n\n월~금 8시 40분 이전 조기 출석 완주!!\n선생님도 놀란 성실함으로 보너스 20 XP가 추가 지급되었습니다!`);
+            }
 
             if (newLevelIndex > oldLevelIndex) {
                 const bonusBong = newLevelIndex * 3;
                 window.playerState.bong += bonusBong;
                 updateUI(); saveDataToCloud();
-                await window.customAlert(`🎉 레벨업 축하합니다!\n새로운 등급으로 진화하여 보너스 자산 [${bonusBong} B]가 지급되었습니다!`);
+                if (!isEarlyBirdJackpot) await window.customAlert(`🎉 레벨업 축하합니다!\n새로운 등급으로 진화하여 보너스 자산 [${bonusBong} B]가 지급되었습니다!`);
             } else { updateUI(); saveDataToCloud(); }
         };
 
@@ -770,6 +874,8 @@
             if (window.playerState.isGuest) return;
             const isOk = await window.customConfirm("완료한 퀘스트를 취소하시겠습니까?\n⚠️ 의미 없는 반복 클릭을 막기 위해 취소 수수료(0.5 B)가 차감됩니다.");
             if (isOk) {
+                if (qId === 'q1') window.playerState.earlyBirdCount = Math.max(0, (window.playerState.earlyBirdCount || 1) - 1);
+                
                 window.playerState.xp -= xp; window.playerState.bong -= (bong + 0.5);
                 if (window.playerState.xp < 0) window.playerState.xp = 0; if (window.playerState.bong < 0) window.playerState.bong = 0;
                 delete window.playerState.quests[qId]; updateUI(); saveDataToCloud();
@@ -778,12 +884,25 @@
 
         window.promptUnlock = async function(qId) {
             if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드입니다.");
-            const code = await window.customPrompt("마스터 J가 부여한 비밀 코드를 입력하세요:", "password");
-            if (code === "마스터J" || code === "오픈" || code === "master" || code === "1") { 
-                await window.customAlert("🔓 퀘스트가 활성화되었습니다!");
+            
+            const currentPw = window.globalSettings.raidPassword || "1234";
+            const code = await window.customPrompt(`전담 교사(또는 GM)가 부여한 레이드 비밀번호를 입력하세요:`, "password");
+            
+            if (code === currentPw || code === "마스터J") { 
+                await window.customAlert("🔓 전담 레이드 퀘스트가 활성화되었습니다!\n이제 퀘스트를 클릭하여 완료하세요.");
                 if(!window.playerState.unlockedQuests) window.playerState.unlockedQuests = {};
                 window.playerState.unlockedQuests[qId] = true; updateUI(); saveDataToCloud();
-            } else if (code !== null) { await window.customAlert("❌ 코드가 일치하지 않습니다."); }
+            } else if (code !== null) { await window.customAlert("❌ 비밀번호가 일치하지 않습니다. 선생님께 다시 확인하세요!"); }
+        };
+
+        window.setRaidPassword = async function() {
+            if (!window.playerState.isGM) return;
+            const newPw = await window.customPrompt("학생들에게 알려줄 새로운 레이드 비밀번호를 입력하세요:", "text");
+            if (newPw) {
+                const settingsRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global');
+                await setDoc(settingsRef, { raidPassword: newPw }, { merge: true });
+                await window.customAlert(`✅ 레이드 비밀번호가 [${newPw}](으)로 변경되었습니다.\n수업 전 전담 선생님께 이 번호를 전달해주세요!`);
+            }
         };
 
         window.handleSkin = async function(skinId) {
@@ -793,21 +912,30 @@
             if(!window.playerState.equippedSkins) window.playerState.equippedSkins = {};
 
             if (window.playerState.ownedSkins[skinId]) {
-                if (skin.border) {
+                // 장착 상태 토글 (같은 종류 스킨은 해제)
+                if (skin.type === 'aura') {
                     if (!window.playerState.equippedSkins[skinId]) {
-                        SKIN_DATA.forEach(s => { if(s.border) window.playerState.equippedSkins[s.id] = false; });
+                        SKIN_DATA.forEach(s => { if(s.type === 'aura') window.playerState.equippedSkins[s.id] = false; });
+                    }
+                } else if (skin.type === 'face') {
+                    if (!window.playerState.equippedSkins[skinId]) {
+                        SKIN_DATA.forEach(s => { if(s.type === 'face') window.playerState.equippedSkins[s.id] = false; });
                     }
                 }
+                
                 window.playerState.equippedSkins[skinId] = !window.playerState.equippedSkins[skinId];
                 updateUI(); saveDataToCloud(); window.location.hash = '#plaza';
             } else {
+                // 구매 로직
                 if (window.playerState.bong >= skin.price || window.playerState.isGM) {
                     const isOk = await window.customConfirm(`'${skin.name}'을(를) ${skin.price} B에 구매하시겠습니까?`);
                     if (isOk) {
                         if (!window.playerState.isGM) window.playerState.bong -= skin.price;
                         window.playerState.ownedSkins[skinId] = true;
                         
-                        if (skin.border) SKIN_DATA.forEach(s => { if(s.border) window.playerState.equippedSkins[s.id] = false; });
+                        if (skin.type === 'aura') SKIN_DATA.forEach(s => { if(s.type === 'aura') window.playerState.equippedSkins[s.id] = false; });
+                        else if (skin.type === 'face') SKIN_DATA.forEach(s => { if(s.type === 'face') window.playerState.equippedSkins[s.id] = false; });
+                        
                         window.playerState.equippedSkins[skinId] = true; 
                         
                         await window.customAlert(`🎉 '${skin.name}' 획득 완료! 캐릭터에 적용되었습니다.`);
@@ -842,7 +970,6 @@
         // 5. 마스터(GM) 관리 로직 (터치보상, 일괄, 개별수정)
         // ==========================================
 
-        // ★ [신규] 광장 캐릭터 클릭 즉각 보상 (+2 XP)
         window.plazaClickXP = async function(stuId, element) {
             if (!window.playerState.isGM) return;
             if (stuId === 'gm') return;
@@ -869,7 +996,6 @@
             await setDoc(docRef, { xp: currentXp + 2, bong: currentBong }, { merge: true });
         };
 
-        // 표의 즉각 보상 (+5 XP, +1 B)
         window.quickReward = async function(type, amount, stuId, btnElement) {
             if (!window.playerState.isGM) return;
             playRewardSound();
@@ -1010,13 +1136,36 @@
                     const levelData = getLevelInfo(stu.xp || 0);
                     const jobsHtml = (stu.jobs || []).map(j => `<i class="fa-solid ${j.icon} ${j.color}" title="${j.name}"></i>`).join(' ');
                     
-                    let equippedEmojis = '';
-                    if (stu.equippedSkins) { SKIN_DATA.forEach(sk => { if (stu.equippedSkins[sk.id] && sk.emoji && !sk.border) equippedEmojis += sk.emoji; }); }
+                    // ★ 마스터 표 안에도 미니 아바타 레이어 구성 적용 ★
+                    const gender = STUDENT_GENDERS[String(i)] || 'M';
+                    let faceEmoji = gender === 'F' ? '👧' : '👦';
+                    const propEmoji = levelData.info.prop;
+
+                    let skinOverlays = '';
+                    if (stu.equippedSkins) { 
+                        SKIN_DATA.forEach(sk => { 
+                            if (stu.equippedSkins[sk.id]) {
+                                if (sk.type === 'face') faceEmoji = sk.emoji;
+                                else if (sk.type === 'overlay') skinOverlays += `<span class="absolute ${sk.overlayClass} z-20 pointer-events-none drop-shadow-md">${sk.emoji}</span>`;
+                            } 
+                        }); 
+                    }
                     const shieldIcon = stu.hasShield ? '🛡️' : '';
+
+                    const avatarHtml = `
+                        <div class="flex items-end text-xl sm:text-2xl mr-2 relative">
+                            <div class="relative inline-block leading-none">${faceEmoji}${skinOverlays}</div>
+                            <span class="text-xs sm:text-sm leading-none ml-1 mb-0.5 animate-pulse">${propEmoji}</span>
+                            <span class="text-sm ml-1 animate-bounce leading-none mb-1">${shieldIcon}</span>
+                        </div>
+                    `;
 
                     tbody.innerHTML += `<tr id="admin-row-${stu.id}" class="border-b border-slate-700 hover:bg-slate-800 transition duration-300">
                     <td class="px-3 py-2 sm:py-3 font-bold text-white whitespace-nowrap">${i}. ${STUDENT_NAMES[i]}</td>
-                    <td class="px-3 py-2 sm:py-3 whitespace-nowrap"><span class="text-base sm:text-lg mr-1">${levelData.info.emoji}${shieldIcon}</span> <span class="text-[10px] sm:text-sm bg-slate-700 rounded px-1 tracking-widest">${equippedEmojis}</span> <span class="text-[10px] sm:text-xs text-slate-400 ml-1">${levelData.info.name}</span></td>
+                    <td class="px-3 py-2 sm:py-3 whitespace-nowrap flex items-center">
+                        ${avatarHtml}
+                        <span class="text-[10px] sm:text-xs text-slate-400 ml-1">${levelData.info.name}</span>
+                    </td>
                     <td class="px-3 py-2 sm:py-3 text-sb-blue font-bold whitespace-nowrap cursor-pointer hover:bg-slate-700 rounded transition" onclick="window.editStudentStat('${stu.id}', 'xp', '${STUDENT_NAMES[i]}', ${stu.xp || 0})" title="클릭하여 수정">${(stu.xp||0).toLocaleString()} <i class="fa-solid fa-pen text-[10px] ml-1 text-slate-500"></i></td>
                     <td class="px-3 py-2 sm:py-3 text-sb-gold font-bold whitespace-nowrap cursor-pointer hover:bg-slate-700 rounded transition" onclick="window.editStudentStat('${stu.id}', 'bong', '${STUDENT_NAMES[i]}', ${stu.bong || 0})" title="클릭하여 수정">${(stu.bong||0).toFixed(1)} B <i class="fa-solid fa-pen text-[10px] ml-1 text-slate-500"></i></td>
                     <td class="px-3 py-2 sm:py-3 flex gap-1 sm:gap-2 text-sm sm:text-lg items-center h-full">${jobsHtml || '<span class="text-[10px] sm:text-xs text-slate-500">없음</span>'}</td>
@@ -1042,10 +1191,12 @@
             const ctx = canv.getContext('2d');
             Chart.defaults.color = '#94a3b8';
             Chart.defaults.font.family = "'Noto Sans KR', sans-serif";
+            
+            // 차트 라벨 (알에서 불새로 진화)
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Lv.1 새내기(🪵)', 'Lv.15 초보(🗡️)', 'Lv.31 중수(⚔️)', 'Lv.51 고수(🛡️)', 'Lv.81 수호자(✨)', 'Lv.100 전설(👑)'],
+                    labels: ['Lv.1 새내기(🥚)', 'Lv.15 초보(🐣)', 'Lv.31 중수(🐥)', 'Lv.51 고수(🦅)', 'Lv.81 수호자(☄️)', 'Lv.100 전설(🐦‍🔥)'],
                     datasets: [{
                         label: '누적 필요 경험치 (XP)',
                         data: [0, 1500, 4500, 10000, 22000, 40000],
