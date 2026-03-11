@@ -33,7 +33,7 @@
 
     <style>
         body { background-color: #0f172a; color: #f8fafc; overflow-x: hidden; }
-        h1, h2, .font-display { font-family: 'Black Han Sans', sans-serif; letter-spacing: 1px; }
+        h1, h2, h3, .font-display { font-family: 'Black Han Sans', sans-serif; letter-spacing: 1px; }
 
         .chart-container { position: relative; width: 100%; max-width: 1000px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
         @media (min-width: 768px) { .chart-container { height: 450px; } }
@@ -65,6 +65,10 @@
 
         .badge-container { position: absolute; top: -6px; right: -6px; display: flex; flex-direction: column-reverse; gap: 2px; }
         .job-badge { background-color: #0f172a; border: 1px solid #475569; border-radius: 9999px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.5); }
+
+        /* 즉각 보상 플로팅 텍스트 애니메이션 */
+        @keyframes floatUpFade { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-40px) scale(1.5); opacity: 0; } }
+        .floating-text { position: absolute; pointer-events: none; animation: floatUpFade 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; font-weight: 900; z-index: 9999; text-shadow: 0 0 10px rgba(0,0,0,0.8); font-family: 'Black Han Sans', sans-serif; letter-spacing: 1px;}
     </style>
 </head>
 <body class="antialiased">
@@ -120,7 +124,7 @@
             <div class="flex items-center justify-between h-14 sm:h-16">
                 <div class="flex items-center gap-2 sm:gap-3">
                     <i class="fa-solid fa-gamepad text-xl sm:text-2xl text-sb-gold"></i>
-                    <span class="font-display text-lg sm:text-2xl text-white tracking-wider">SAMBONG WORLD <span class="text-[10px] sm:text-xs text-sb-red ml-1 sm:ml-2">v3.5</span></span>
+                    <span class="font-display text-lg sm:text-2xl text-white tracking-wider">SAMBONG WORLD <span class="text-[10px] sm:text-xs text-sb-red ml-1 sm:ml-2">v4.0</span></span>
                 </div>
                 <div class="flex items-center space-x-2 sm:space-x-4">
                     <div id="saveStatus" class="hidden text-[10px] sm:text-xs text-slate-400 items-center gap-1.5 sm:gap-2 bg-slate-800 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-slate-700">
@@ -140,14 +144,14 @@
         </div>
     </nav>
 
-    <!-- 메인 콘텐츠 영역 (모바일 여백 축소) -->
+    <!-- 메인 콘텐츠 영역 -->
     <div class="pt-20 sm:pt-24 pb-12 px-3 sm:px-4 max-w-7xl mx-auto space-y-12 sm:space-y-20">
 
         <header class="text-center space-y-4 sm:space-y-6">
             <h1 class="text-2xl sm:text-5xl md:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-sb-gold to-yellow-200 drop-shadow-lg whitespace-nowrap tracking-tight">플레이어 공식 가이드</h1>
             <p class="text-sm sm:text-xl text-slate-400 max-w-2xl mx-auto break-keep px-2">삼봉초등학교 6학년 1반의 GM(선생님)과 플레이어(학생)들을 위한 규칙서입니다. 매일 성실하게 활동하여 전설의 마스터가 되어보세요.</p>
             <div class="inline-flex flex-wrap justify-center items-center gap-2 sm:gap-3 bg-indigo-500/20 text-indigo-300 border border-indigo-500 px-3 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-[10px] sm:text-sm">
-                <i class="fa-solid fa-shield-halved animate-pulse"></i> [v3.5 패치] 무지개 테두리 스킨 추가, 절대 방패 시스템 및 마스터 일괄/개별 편집 기능 업데이트!
+                <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i> [v4.0 대규모 패치] 광장 터치 즉각 보상 추가, 일괄지급 및 방패 시스템 완벽 연동!
             </div>
         </header>
 
@@ -155,39 +159,69 @@
         <section id="adminDashboard" class="hidden scroll-mt-20">
             <div class="mb-4 sm:mb-8">
                 <h2 class="text-2xl sm:text-3xl font-display text-sb-red flex items-center gap-2 sm:gap-3"><i class="fa-solid fa-eye"></i> 마스터 관찰구역</h2>
-                <p class="text-xs sm:text-sm text-slate-400 mt-1 sm:mt-2">12명 플레이어의 실시간 활동 데이터 및 일괄/개별 편집 패널입니다. (마스터 전용)</p>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1 sm:mt-2">12명 플레이어의 실시간 데이터 및 일괄/개별 편집 패널입니다. (전자칠판 터치 최적화)</p>
             </div>
             
-            <!-- 마스터 일괄 차감 패널 추가 -->
-            <div class="glass-panel p-4 sm:p-6 rounded-2xl mb-4 border border-sb-red/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
-                <h3 class="text-white font-bold mb-3 flex items-center"><i class="fa-solid fa-gavel text-sb-red mr-2"></i> 학생 전체 일괄 차감 (방패 소지자 1회 방어)</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <span class="text-sb-blue text-xs font-bold mb-2 block">XP (경험치) 차감 버튼</span>
-                        <div class="flex flex-wrap gap-2">
-                            <button onclick="window.bulkDeduct('xp', 1)" class="bg-slate-700 hover:bg-sb-red text-white text-xs px-4 py-2 rounded transition font-bold shadow">-1</button>
-                            <button onclick="window.bulkDeduct('xp', 5)" class="bg-slate-700 hover:bg-sb-red text-white text-xs px-4 py-2 rounded transition font-bold shadow">-5</button>
-                            <button onclick="window.bulkDeduct('xp', 10)" class="bg-slate-700 hover:bg-sb-red text-white text-xs px-4 py-2 rounded transition font-bold shadow">-10</button>
-                            <button onclick="window.bulkDeduct('xp', 100)" class="bg-slate-700 hover:bg-sb-red text-white text-xs px-4 py-2 rounded transition font-bold shadow">-100</button>
+            <!-- 마스터 일괄 지급/차감 패널 -->
+            <div class="glass-panel p-4 sm:p-6 rounded-2xl mb-4 border border-sb-gold/50 shadow-[0_0_15px_rgba(251,191,36,0.1)]">
+                <h3 class="text-white font-bold mb-3 flex items-center"><i class="fa-solid fa-wand-magic-sparkles text-sb-gold mr-2"></i> 학생 전체 일괄 지급 및 차감</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 일괄 지급 (Add) -->
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-emerald-500/30">
+                        <span class="text-emerald-400 text-sm font-bold mb-3 block"><i class="fa-solid fa-plus"></i> 일괄 지급 (전체 학생)</span>
+                        <div class="flex flex-col gap-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sb-blue text-xs font-bold w-12">XP 지급</span>
+                                <div class="flex flex-wrap gap-2 flex-1">
+                                    <button onclick="window.bulkAdd('xp', 1)" class="flex-1 bg-slate-700 hover:bg-sb-blue text-white text-xs py-2 rounded transition font-bold shadow">+1</button>
+                                    <button onclick="window.bulkAdd('xp', 5)" class="flex-1 bg-slate-700 hover:bg-sb-blue text-white text-xs py-2 rounded transition font-bold shadow">+5</button>
+                                    <button onclick="window.bulkAdd('xp', 10)" class="flex-1 bg-slate-700 hover:bg-sb-blue text-white text-xs py-2 rounded transition font-bold shadow">+10</button>
+                                    <button onclick="window.bulkAdd('xp', 100)" class="flex-1 bg-slate-700 hover:bg-sb-blue text-white text-xs py-2 rounded transition font-bold shadow">+100</button>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sb-gold text-xs font-bold w-12">B 지급</span>
+                                <div class="flex flex-wrap gap-2 flex-1">
+                                    <button onclick="window.bulkAdd('bong', 1)" class="flex-1 bg-slate-700 hover:bg-sb-gold text-white text-xs py-2 rounded transition font-bold shadow text-slate-900">+1</button>
+                                    <button onclick="window.bulkAdd('bong', 5)" class="flex-1 bg-slate-700 hover:bg-sb-gold text-white text-xs py-2 rounded transition font-bold shadow text-slate-900">+5</button>
+                                    <button onclick="window.bulkAdd('bong', 10)" class="flex-1 bg-slate-700 hover:bg-sb-gold text-white text-xs py-2 rounded transition font-bold shadow text-slate-900">+10</button>
+                                    <button onclick="window.bulkAdd('bong', 100)" class="flex-1 bg-slate-700 hover:bg-sb-gold text-white text-xs py-2 rounded transition font-bold shadow text-slate-900">+100</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <span class="text-sb-gold text-xs font-bold mb-2 block">B (봉) 자산 차감 버튼</span>
-                        <div class="flex flex-wrap gap-2">
-                            <button onclick="window.bulkDeduct('bong', 1)" class="bg-slate-700 hover:bg-sb-red text-white text-xs px-4 py-2 rounded transition font-bold shadow">-1</button>
-                            <button onclick="window.bulkDeduct('bong', 5)" class="bg-slate-700 hover:bg-sb-red text-white text-xs px-4 py-2 rounded transition font-bold shadow">-5</button>
-                            <button onclick="window.bulkDeduct('bong', 10)" class="bg-slate-700 hover:bg-sb-red text-white text-xs px-4 py-2 rounded transition font-bold shadow">-10</button>
-                            <button onclick="window.bulkDeduct('bong', 100)" class="bg-slate-700 hover:bg-sb-red text-white text-xs px-4 py-2 rounded transition font-bold shadow">-100</button>
+                    <!-- 일괄 차감 (Deduct) -->
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-sb-red/30">
+                        <span class="text-sb-red text-sm font-bold mb-3 block"><i class="fa-solid fa-minus"></i> 일괄 차감 (방패 소지자 1회 방어)</span>
+                        <div class="flex flex-col gap-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sb-blue text-xs font-bold w-12">XP 차감</span>
+                                <div class="flex flex-wrap gap-2 flex-1">
+                                    <button onclick="window.bulkDeduct('xp', 1)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-1</button>
+                                    <button onclick="window.bulkDeduct('xp', 5)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-5</button>
+                                    <button onclick="window.bulkDeduct('xp', 10)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-10</button>
+                                    <button onclick="window.bulkDeduct('xp', 100)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-100</button>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sb-gold text-xs font-bold w-12">B 차감</span>
+                                <div class="flex flex-wrap gap-2 flex-1">
+                                    <button onclick="window.bulkDeduct('bong', 1)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-1</button>
+                                    <button onclick="window.bulkDeduct('bong', 5)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-5</button>
+                                    <button onclick="window.bulkDeduct('bong', 10)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-10</button>
+                                    <button onclick="window.bulkDeduct('bong', 100)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-100</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <p class="text-xs text-yellow-400 mt-4 border-t border-slate-700 pt-2"><i class="fa-solid fa-circle-info"></i> 표의 <strong>[누적 XP]</strong>와 <strong>[보유 자산]</strong> 수치를 클릭하면 개별 학생의 데이터를 직접 수정할 수 있습니다.</p>
+                <p class="text-[11px] sm:text-xs text-yellow-400 mt-4 border-t border-slate-700 pt-3"><i class="fa-solid fa-circle-info"></i> <strong>수업 중 즉각 보상:</strong> 표 우측의 <strong>[터치 보상]</strong> 버튼이나 아래 <strong>[삼봉 광장]</strong>의 캐릭터 카드를 직접 터치하면 번쩍이는 효과와 함께 경험치가 즉시 지급됩니다!</p>
             </div>
 
             <div class="glass-panel p-4 sm:p-6 rounded-2xl overflow-x-auto shadow-2xl border border-sb-red/30">
-                <table class="w-full text-left text-xs sm:text-sm text-slate-300 min-w-[600px]">
+                <table class="w-full text-left text-xs sm:text-sm text-slate-300 min-w-[700px]">
                     <thead class="text-[10px] sm:text-xs uppercase bg-slate-800 text-slate-400 border-b border-slate-600">
-                        <tr><th class="px-3 py-2 sm:py-3">학번</th><th class="px-3 py-2 sm:py-3">캐릭터 (방패/스킨)</th><th class="px-3 py-2 sm:py-3">누적 XP <i class="fa-solid fa-pen text-[10px]"></i></th><th class="px-3 py-2 sm:py-3">보유 자산 (B) <i class="fa-solid fa-pen text-[10px]"></i></th><th class="px-3 py-2 sm:py-3">장착 직업</th><th class="px-3 py-2 sm:py-3">접속 여부</th></tr>
+                        <tr><th class="px-3 py-2 sm:py-3">학번</th><th class="px-3 py-2 sm:py-3">캐릭터 (방패/스킨)</th><th class="px-3 py-2 sm:py-3">누적 XP <i class="fa-solid fa-pen text-[10px]"></i></th><th class="px-3 py-2 sm:py-3">보유 자산 (B) <i class="fa-solid fa-pen text-[10px]"></i></th><th class="px-3 py-2 sm:py-3">장착 직업</th><th class="px-3 py-2 sm:py-3 text-center text-emerald-400"><i class="fa-solid fa-bolt"></i> 터치 보상 (전자칠판용)</th></tr>
                     </thead>
                     <tbody id="adminTableBody"></tbody>
                 </table>
@@ -206,7 +240,7 @@
         <section id="plaza" class="scroll-mt-20">
             <div class="mb-4 sm:mb-8">
                 <h2 class="text-2xl sm:text-3xl font-display text-emerald-400 flex items-center gap-2 sm:gap-3"><i class="fa-solid fa-users"></i> 삼봉 광장</h2>
-                <p class="text-xs sm:text-sm text-slate-400 mt-1 sm:mt-2">나와 친구들의 현재 캐릭터 외형과 장착 중인 스킨입니다. (실시간 동기화)</p>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1 sm:mt-2">나와 친구들의 실시간 캐릭터 외형입니다. <strong class="text-sb-gold">마스터 J(선생님)는 카드를 클릭하여 +2 XP를 즉각 지급할 수 있습니다.</strong></p>
             </div>
             <div class="glass-panel p-4 sm:p-8 rounded-2xl overflow-hidden">
                 <div class="flex flex-wrap gap-3 sm:gap-6 justify-center items-end min-h-[160px]" id="plazaContainer">
@@ -336,7 +370,7 @@
             { id: 'q5', type: 'locked', name: '전투력 측정 (보스전)', desc: '단원평가 및 수행평가 성적 향상', xp: 500, bong: 20.0, icon: 'fa-scroll', color: 'text-red-300' }
         ];
 
-        // 7색상 테두리 오라 스킨 추가
+        // 7색상 테두리 오라 스킨
         const SKIN_DATA = [
             { id: 'sk1', name: '마법사 모자', desc: '지능 상승의 모자', price: 150, emoji: '🎩', border: '', glow: '' },
             { id: 'sk2', name: '선글라스', desc: '인싸의 기본 소양', price: 200, emoji: '🕶️', border: '', glow: '' },
@@ -351,7 +385,7 @@
             { id: 'sk_blk', name: '다크 오라', desc: '어둠의 그림자 테두리', price: 150, emoji: '⚫', border: 'border-slate-900', glow: 'shadow-[0_0_15px_rgba(0,0,0,0.9)]' }
         ];
 
-        // 1회용 방패 아이템 추가
+        // 상점
         const SHOP_DATA = [
             { id: 'item_shield', name: '절대 방패 (1회용)', desc: '전체 차감 공격을 1회 완벽 방어합니다.', price: 50, icon: 'fa-shield-halved', iconColor: 'text-indigo-400', isConsumable: true },
             { id: 's1', name: '뮤직 타임', desc: '쉬는 시간 신청곡 틀기', price: 15, icon: 'fa-music', iconColor: 'text-pink-400' },
@@ -383,6 +417,7 @@
         window.allStudentsData = []; 
         window.gmData = null;
         let db, auth, currentStudentDocRef = null;
+        let unsubscribeGlobal = null;
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'sambong-class-2026';
 
         // ==========================================
@@ -438,7 +473,9 @@
 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
-                        onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'students'), (snapshot) => {
+                        // ★ 핵심: 누구나 광장 데이터를 볼 수 있도록 글로벌 Snapshot 유지 ★
+                        if (unsubscribeGlobal) unsubscribeGlobal();
+                        unsubscribeGlobal = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'students'), (snapshot) => {
                             const students = [];
                             let gmD = null;
                             snapshot.forEach(d => { 
@@ -447,8 +484,15 @@
                             });
                             window.allStudentsData = students;
                             window.gmData = gmD;
-                            if (window.playerState && window.playerState.isGM) window.renderAdminTable(students);
+                            
+                            // GM이면 테이블 리렌더링
+                            if (window.playerState && window.playerState.isGM) {
+                                window.renderAdminTable(students);
+                            }
+                            // 누구나 광장 리렌더링
                             window.renderPlaza(students, gmD);
+                        }, (error) => {
+                            console.error("데이터 동기화 에러 (규칙 문제일 수 있습니다):", error);
                         });
 
                         const savedId = localStorage.getItem('sambong_student_id');
@@ -474,7 +518,19 @@
             let html = '';
 
             const createCard = (data, isGMCard, idLabel) => {
-                if (!data) return `<div class="flex flex-col items-center p-3 sm:p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 w-[104px] sm:w-36 relative opacity-50 grayscale transition-all"><div class="text-3xl sm:text-4xl mb-2 opacity-30">👤</div><div class="text-[10px] font-bold text-slate-500 mb-1 mt-1">-</div><div class="font-bold text-slate-500 bg-slate-900 px-2 py-0.5 sm:py-1 rounded-md text-[10px] sm:text-xs whitespace-nowrap w-full text-center truncate">${idLabel}</div></div>`;
+                // 클릭 이벤트 및 커서 효과 (GM일 때만 작동, 본인 카드는 제외)
+                const emptyId = idLabel.split('.')[0].trim();
+                const targetId = data ? data.id : emptyId;
+                const gmOnClick = window.playerState.isGM && !isGMCard ? `onclick="window.plazaClickXP('${targetId}', this)"` : '';
+                const gmCursor = window.playerState.isGM && !isGMCard ? 'cursor-pointer hover:scale-[1.03] active:scale-95' : '';
+
+                if (!data) {
+                    return `<div ${gmOnClick} class="flex flex-col items-center p-3 sm:p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 w-[104px] sm:w-36 relative opacity-50 transition-all duration-200 ${gmCursor}">
+                        <div class="text-3xl sm:text-4xl mb-2 opacity-30 grayscale">👤</div>
+                        <div class="text-[10px] font-bold text-slate-500 mb-1 mt-1">-</div>
+                        <div class="font-bold text-slate-500 bg-slate-900 px-2 py-0.5 sm:py-1 rounded-md text-[10px] sm:text-xs whitespace-nowrap w-full text-center truncate">${idLabel}</div>
+                    </div>`;
+                }
 
                 const mySavedId = localStorage.getItem('sambong_student_id');
                 const isMe = (window.playerState.isGM && isGMCard) || (!window.playerState.isGM && !isGMCard && data.id === mySavedId);
@@ -486,7 +542,6 @@
                 if (displayData.equippedSkins) {
                     SKIN_DATA.forEach(s => {
                         if (displayData.equippedSkins[s.id]) {
-                            // 이모지가 있는 스킨(모자 등)과 테두리 오라를 분리
                             if(s.emoji && !s.border) equippedEmojis += s.emoji;
                             if(s.border) { customBorder = s.border; customGlow = s.glow; }
                         }
@@ -511,7 +566,7 @@
                     const glow = customGlow || 'shadow-md';
                     const jobsHtml = (displayData.jobs || []).map((j, i) => `<div class="job-badge ${j.color} w-4 h-4 sm:w-5 sm:h-5" style="z-index: ${10 - i}"><i class="fa-solid ${j.icon} text-[8px] sm:text-[10px]"></i></div>`).join('');
 
-                    return `<div class="flex flex-col items-center p-3 sm:p-4 rounded-xl border-2 w-[104px] sm:w-36 relative transition-all duration-300 ${glow} ${border} ${lv.info.bgColor} ${meHighlight}">${shieldHtml}
+                    return `<div ${gmOnClick} class="flex flex-col items-center p-3 sm:p-4 rounded-xl border-2 w-[104px] sm:w-36 relative transition-all duration-300 ${glow} ${border} ${lv.info.bgColor} ${meHighlight} ${gmCursor}">${shieldHtml}
                         <div class="badge-container gap-1">${jobsHtml}</div>
                         <div class="relative mb-2 flex flex-col items-center">
                             <div class="text-4xl sm:text-5xl avatar-bounce transition-all duration-300 ${lv.info.anim}">${lv.info.emoji}</div>
@@ -612,8 +667,43 @@
         }
 
         // ==========================================
-        // 4. 모달 및 이벤트, 아이템 로직
+        // 4. 오디오 컨텍스트 및 모달, 아이템 로직
         // ==========================================
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+        function playRewardSound() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+                osc.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1); // A6
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } catch(e) { console.log('Audio error:', e); }
+        }
+        function playCoinSound() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(987.77, audioCtx.currentTime); // B5
+                osc.frequency.setValueAtTime(1318.51, audioCtx.currentTime + 0.1); // E6
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime + 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+            } catch(e) { console.log('Audio error:', e); }
+        }
+
         window.customAlert = (m) => new Promise(r => {
             const d = document.createElement('div'); d.className = "fixed inset-0 z-[200] flex items-center justify-center bg-black/80 px-4";
             d.innerHTML = `<div class="bg-sb-panel p-6 sm:p-8 rounded-3xl border-2 border-slate-700 max-w-sm w-full text-center space-y-4 shadow-2xl"><h3 class="text-xl sm:text-2xl font-display text-white">알림</h3><p class="text-sm sm:text-base text-slate-300 whitespace-pre-wrap">${m}</p><button id="bOk" class="bg-sb-blue text-white font-bold py-2 px-8 rounded-full w-full">확인</button></div>`;
@@ -626,7 +716,6 @@
             document.body.appendChild(d); document.getElementById('bYes').onclick = () => { d.remove(); r(true); }; document.getElementById('bNo').onclick = () => { d.remove(); r(false); };
         });
 
-        // Prompt의 입력 타입을 동적으로 받기 (숫자/텍스트 겸용)
         window.customPrompt = (m, type="password") => new Promise(r => {
             const d = document.createElement('div'); d.className = "fixed inset-0 z-[200] flex items-center justify-center bg-black/80 px-4";
             d.innerHTML = `<div class="bg-sb-panel p-6 sm:p-8 rounded-3xl border-2 border-slate-700 max-w-sm w-full text-center space-y-4 shadow-2xl"><h3 class="text-xl sm:text-2xl font-display text-sb-gold">입력 구역</h3><p class="text-sm sm:text-base text-slate-300">${m}</p><input type="${type}" id="pIn" class="w-full bg-slate-800 border text-white rounded-xl px-4 py-3 text-center my-4"><div class="flex gap-4"><button id="bpNo" class="bg-slate-700 text-white font-bold py-2 px-6 rounded-full w-full">취소</button><button id="bpYes" class="bg-emerald-500 text-white font-bold py-2 px-6 rounded-full w-full">입력</button></div></div>`;
@@ -704,7 +793,6 @@
             if(!window.playerState.equippedSkins) window.playerState.equippedSkins = {};
 
             if (window.playerState.ownedSkins[skinId]) {
-                // 오라 스킨의 경우 다른 오라 스킨을 자동 장착 해제 (중복 방지)
                 if (skin.border) {
                     if (!window.playerState.equippedSkins[skinId]) {
                         SKIN_DATA.forEach(s => { if(s.border) window.playerState.equippedSkins[s.id] = false; });
@@ -729,10 +817,8 @@
             }
         };
 
-        // 방패 및 상점 아이템 통합 구매 로직
         window.buyItem = async function(id, name, price, isConsumable) {
             if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드입니다.");
-            
             if (isConsumable && id === 'item_shield') {
                 if (window.playerState.hasShield) return await window.customAlert("🛡️ 이미 절대 방패를 보유하고 있습니다.\n(광장에서 캐릭터 카드를 확인하세요!)");
                 if (window.playerState.bong >= price || window.playerState.isGM) {
@@ -743,11 +829,8 @@
                         updateUI(); saveDataToCloud();
                         await window.customAlert("🛡️ 절대 방패 장착 완료!\n마스터의 다음 전체 차감 공격을 1회 방어합니다.");
                     }
-                } else {
-                     await window.customAlert(`❌ [골드 부족] ${price - window.playerState.bong}B가 더 필요합니다.`);
-                }
+                } else { await window.customAlert(`❌ [골드 부족] ${price - window.playerState.bong}B가 더 필요합니다.`); }
             } else {
-                // 일반 상점 요청 처리
                 const msg = window.playerState.bong >= price || window.playerState.isGM
                     ? `🎉 [구매 가능] '${name}'을(를) 구매할 수 있습니다!\n(마스터 J 선생님에게 직접 신청하세요)`
                     : `❌ [골드 부족] '${name}'을 구매하려면 ${(price - window.playerState.bong).toFixed(1)}B가 더 필요합니다.`;
@@ -756,27 +839,90 @@
         };
 
         // ==========================================
-        // 5. 마스터(GM) 관리 로직 (일괄 차감 & 개별 수정)
+        // 5. 마스터(GM) 관리 로직 (터치보상, 일괄, 개별수정)
         // ==========================================
+
+        // ★ [신규] 광장 캐릭터 클릭 즉각 보상 (+2 XP)
+        window.plazaClickXP = async function(stuId, element) {
+            if (!window.playerState.isGM) return;
+            if (stuId === 'gm') return;
+
+            playCoinSound();
+
+            const rect = element.getBoundingClientRect();
+            const floater = document.createElement('div');
+            floater.className = 'floating-text text-sb-blue';
+            floater.innerHTML = `+2 <span class="text-xs">XP</span>`;
+            floater.style.left = `${rect.left + (rect.width/2) - 15 + window.scrollX}px`;
+            floater.style.top = `${rect.top + window.scrollY}px`;
+            document.body.appendChild(floater);
+            setTimeout(() => floater.remove(), 1000);
+
+            element.classList.add('ring-4', 'ring-emerald-400');
+            setTimeout(() => element.classList.remove('ring-4', 'ring-emerald-400'), 300);
+
+            const stu = window.allStudentsData.find(s => s.id === stuId);
+            let currentXp = stu ? (stu.xp || 0) : 0;
+            let currentBong = stu ? (stu.bong || 0) : 0;
+            
+            let docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + stuId);
+            await setDoc(docRef, { xp: currentXp + 2, bong: currentBong }, { merge: true });
+        };
+
+        // 표의 즉각 보상 (+5 XP, +1 B)
+        window.quickReward = async function(type, amount, stuId, btnElement) {
+            if (!window.playerState.isGM) return;
+            playRewardSound();
+
+            const rect = btnElement.getBoundingClientRect();
+            const floater = document.createElement('div');
+            floater.className = 'floating-text ' + (type === 'xp' ? 'text-sb-blue' : 'text-yellow-400');
+            floater.innerHTML = `+${amount} <span class="text-sm">${type === 'xp' ? 'XP' : 'B'}</span>`;
+            floater.style.left = `${rect.left + (rect.width/2) - 20 + window.scrollX}px`;
+            floater.style.top = `${rect.top + window.scrollY - 10}px`;
+            document.body.appendChild(floater);
+            setTimeout(() => floater.remove(), 1000);
+
+            const row = document.getElementById(`admin-row-${stuId}`);
+            if (row) {
+                row.classList.add('bg-emerald-900/60');
+                setTimeout(() => row.classList.remove('bg-emerald-900/60'), 400);
+            }
+
+            const stu = window.allStudentsData.find(s => s.id === stuId);
+            let docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + stuId);
+            let updates = {};
+            updates[type] = (stu ? (stu[type] || 0) : 0) + amount;
+            await setDoc(docRef, updates, { merge: true });
+        };
+
+        window.bulkAdd = async function(type, amount) {
+            const typeName = type === 'xp' ? '경험치(XP)' : '자산(B)';
+            const ok = await window.customConfirm(`모든 학생에게 [${typeName}]를 ${amount}만큼 일괄 지급하시겠습니까?`);
+            if(!ok) return;
+            playRewardSound();
+            for (const stu of window.allStudentsData) {
+                if (stu.id === 'gm') continue;
+                let docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + stu.id);
+                let updates = {}; updates[type] = (stu[type] || 0) + amount;
+                await setDoc(docRef, updates, { merge: true });
+            }
+            await window.customAlert(`🎉 모든 학생에게 +${amount} ${type === 'xp' ? 'XP' : 'B'} 일괄 지급이 완료되었습니다!`);
+        };
+
         window.bulkDeduct = async function(type, amount) {
             const typeName = type === 'xp' ? '경험치(XP)' : '자산(B)';
             const ok = await window.customConfirm(`정말 모든 학생의 [${typeName}]를 ${amount}만큼 차감하시겠습니까?\n⚠️ 절대 방패를 보유한 학생은 차감을 방어하고 방패가 소멸됩니다.`);
             if(!ok) return;
             
             let protectedCount = 0; let affectedCount = 0;
-
             for (const stu of window.allStudentsData) {
                 if (stu.id === 'gm') continue;
                 let docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + stu.id);
                 let updates = {};
                 
-                if (stu.hasShield) {
-                    updates.hasShield = false; protectedCount++;
-                } else {
-                    let newVal = (stu[type] || 0) - amount;
-                    if (newVal < 0) newVal = 0;
-                    updates[type] = newVal; affectedCount++;
-                }
+                if (stu.hasShield) { updates.hasShield = false; protectedCount++; } 
+                else { let newVal = (stu[type] || 0) - amount; if (newVal < 0) newVal = 0; updates[type] = newVal; affectedCount++; }
                 await setDoc(docRef, updates, { merge: true });
             }
             await window.customAlert(`💥 일괄 차감 공격이 완료되었습니다.\n\n✔️ 피해를 입은 학생: ${affectedCount}명\n🛡️ 방어 성공(방패 소멸): ${protectedCount}명`);
@@ -791,18 +937,14 @@
                 const num = parseFloat(input);
                 if (!isNaN(num) && num >= 0) {
                     let docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + stuId);
-                    let updates = {};
-                    updates[type] = type === 'bong' ? parseFloat(num.toFixed(1)) : Math.floor(num);
+                    let updates = {}; updates[type] = type === 'bong' ? parseFloat(num.toFixed(1)) : Math.floor(num);
                     await setDoc(docRef, updates, { merge: true });
-                    // alert 없이 조용히 반영 (광장에 즉시 업데이트됨)
-                } else {
-                    await window.customAlert("❌ 올바른 숫자를 입력하세요.");
-                }
+                } else { await window.customAlert("❌ 올바른 숫자를 입력하세요."); }
             }
         };
 
         // ==========================================
-        // 6. 코어 데이터 동기화 함수
+        // 6. 코어 로그인 동기화 함수
         // ==========================================
         async function attemptLogin(studentId, pin, isAutoLogin) {
             if (!db || !auth.currentUser) return;
@@ -838,10 +980,10 @@
         function completeLoginUI(nameLabel, isGM) {
             document.getElementById('loginOverlay').style.opacity = '0';
             setTimeout(() => document.getElementById('loginOverlay').classList.add('hidden'), 500);
-            document.getElementById('playerNameDisplay').innerText = nameLabel;
             
             document.getElementById('saveStatus').classList.remove('hidden');
             document.getElementById('saveStatus').classList.add('flex');
+            document.getElementById('playerNameDisplay').innerText = nameLabel;
             
             if (window.playerState.isGuest) {
                 document.getElementById('cloudIcon').className = "fa-solid fa-eye text-slate-400";
