@@ -2,8 +2,36 @@
 <html lang="ko" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>2026 삼봉 월드: 인터랙티브 플레이어 가이드</title>
+
+    <!-- ★ PWA 홈 화면 추가 (스마트폰 앱 아이콘 & 테마 설정) ★ -->
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="삼봉월드">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e293b'/><text x='50%' y='50%' font-size='65' dominant-baseline='central' text-anchor='middle'>👑</text></svg>">
+    
+    <script>
+        // 동적 Web App 매니페스트 생성 (단일 파일 유지를 위해 자동 주입)
+        const manifest = {
+            "name": "2026 삼봉 월드 플레이어 가이드",
+            "short_name": "삼봉월드",
+            "start_url": window.location.pathname,
+            "display": "standalone",
+            "background_color": "#0f172a",
+            "theme_color": "#0f172a",
+            "icons": [{
+                "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e293b'/><text x='50%' y='50%' font-size='65' dominant-baseline='central' text-anchor='middle'>👑</text></svg>",
+                "sizes": "512x512",
+                "type": "image/svg+xml",
+                "purpose": "any maskable"
+            }]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+        const manifestUrl = URL.createObjectURL(manifestBlob);
+        document.write(`<link rel="manifest" href="${manifestUrl}">`);
+    </script>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -137,6 +165,10 @@
                         <a href="#plaza" class="text-slate-300 hover:text-sb-gold transition font-bold text-sm">광장</a>
                         <a href="#economy" class="text-slate-300 hover:text-sb-gold transition font-bold text-sm">직업</a>
                     </div>
+                    <!-- ★ 앱 설치 버튼 (모바일/PC PWA 설치용) ★ -->
+                    <button id="btnInstallApp" class="hidden text-[10px] sm:text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg transition font-bold shadow-[0_0_10px_rgba(16,185,129,0.3)]">
+                        <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">앱 설치</span>
+                    </button>
                     <button onclick="window.logout()" class="text-[10px] sm:text-xs bg-slate-700 hover:bg-slate-600 text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg transition">
                         <i class="fa-solid fa-right-from-bracket"></i> <span class="hidden sm:inline">로그아웃</span>
                     </button>
@@ -413,6 +445,8 @@
         // 상점
         const SHOP_DATA = [
             { id: 'item_shield', name: '절대 방패 (내구도 100)', desc: '마스터의 차감 공격을 최대 100(XP 또는 B)만큼 방어합니다.', price: 50, icon: 'fa-shield-halved', iconColor: 'text-indigo-400', isConsumable: true },
+            { id: 'item_xp', name: '지혜의 비약 (+100 XP)', desc: '100 XP를 즉시 획득하여 폭풍 성장합니다.', price: 100, icon: 'fa-flask', iconColor: 'text-blue-400', isConsumable: true },
+            { id: 'item_gacha', name: '행운의 랜덤 박스', desc: '50 B를 내고 0~100 B를 무작위로 획득합니다. 대박을 노리세요!', price: 50, icon: 'fa-gift', iconColor: 'text-red-400', isConsumable: true },
             { id: 's1', name: '뮤직 타임', desc: '쉬는 시간 신청곡 틀기', price: 15, icon: 'fa-music', iconColor: 'text-pink-400' },
             { id: 's2', name: '시간 왜곡', desc: '시간표 순서 바꾸기', price: 100, icon: 'fa-clock-rotate-left', iconColor: 'text-blue-400' },
             { id: 's3', name: '보드게임 타임', desc: '보드게임 시간 생성', price: 400, icon: 'fa-dice', iconColor: 'text-green-400' },
@@ -554,6 +588,11 @@
             return { info: LEVEL_DATA[LEVEL_DATA.length - 1], index: LEVEL_DATA.length - 1 };
         }
 
+        // ★ 정확한 레벨 숫자(Lv.1 ~ Lv.100)를 도출하는 함수 추가 ★
+        function calculateExactLevel(xp) {
+            return Math.min(100, Math.max(1, Math.floor(1 + Math.sqrt((xp || 0) / 4.04))));
+        }
+
         window.renderPlaza = function(studentsData, gmData) {
             const container = document.getElementById('plazaContainer');
             if(!container) return;
@@ -577,6 +616,7 @@
                 const isMe = (window.playerState.isGM && isGMCard) || (!window.playerState.isGM && !isGMCard && data.id === mySavedId);
                 const displayData = isMe ? { ...data, ...window.playerState } : data;
                 const lv = getLevelInfo(displayData.xp || 0);
+                const exactLevel = calculateExactLevel(displayData.xp || 0); // 레벨 계산 연동
                 const meHighlight = isMe ? 'ring-2 ring-white z-10' : '';
 
                 // ★ 성별 고정 얼굴 + 스킨 상점/오버레이 로직 적용 ★
@@ -642,7 +682,7 @@
                                 <div class="text-[0.6em] leading-none mb-1 animate-pulse">${propEmoji}</div>
                             </div>
                         </div>
-                        <div class="text-[9px] sm:text-[10px] font-bold mb-1 mt-1 ${lv.info.textColor}">${lv.info.name}</div>
+                        <div class="text-[9px] sm:text-[10px] font-bold mb-1 mt-1 ${lv.info.textColor}">Lv.${exactLevel} ${lv.info.name}</div>
                         <div class="font-bold text-white bg-slate-900 px-2 py-0.5 sm:py-1 rounded-md text-[10px] sm:text-xs whitespace-nowrap w-full text-center truncate">${idLabel}</div>
                         <div class="text-[10px] sm:text-xs text-sb-blue mt-1.5 font-bold">${(displayData.xp || 0).toLocaleString()} XP</div>
                         ${gmControls}
@@ -970,16 +1010,53 @@
 
         window.buyItem = async function(id, name, price, isConsumable) {
             if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드입니다.");
-            if (isConsumable && id === 'item_shield') {
+            if (isConsumable) {
                 if (window.playerState.bong >= price || window.playerState.isGM) {
-                    const currentHP = (window.playerState.shieldHP || 0) + (window.playerState.hasShield ? 100 : 0);
-                    const ok = await window.customConfirm(`[${name}]을(를) ${price}B에 구매하시겠습니까?\n(현재 방패 내구도: ${currentHP})`);
+                    let confirmMsg = `[${name}]을(를) ${price}B에 구매하시겠습니까?`;
+                    if (id === 'item_shield') {
+                        const currentHP = (window.playerState.shieldHP || 0) + (window.playerState.hasShield ? 100 : 0);
+                        confirmMsg = `[${name}]을(를) ${price}B에 구매하시겠습니까?\n(현재 방패 내구도: ${currentHP})`;
+                    }
+                    
+                    const ok = await window.customConfirm(confirmMsg);
                     if(ok) {
                         if(!window.playerState.isGM) window.playerState.bong -= price;
-                        window.playerState.shieldHP = currentHP + 100;
-                        window.playerState.hasShield = false; // 마이그레이션 적용
-                        updateUI(); saveDataToCloud();
-                        await window.customAlert(`🛡️ 절대 방패 충전 완료!\n현재 방패 내구도: ${window.playerState.shieldHP}\n마스터의 차감 공격을 방어합니다.`);
+                        
+                        if (id === 'item_shield') {
+                            const currentHP = (window.playerState.shieldHP || 0) + (window.playerState.hasShield ? 100 : 0);
+                            window.playerState.shieldHP = currentHP + 100;
+                            window.playerState.hasShield = false; // 마이그레이션 적용
+                            updateUI(); saveDataToCloud();
+                            await window.customAlert(`🛡️ 절대 방패 충전 완료!\n현재 방패 내구도: ${window.playerState.shieldHP}\n마스터의 차감 공격을 방어합니다.`);
+                        } else if (id === 'item_xp') {
+                            const oldLevelIndex = getLevelInfo(window.playerState.xp).index;
+                            window.playerState.xp += 100;
+                            const newLevelIndex = getLevelInfo(window.playerState.xp).index;
+                            
+                            let levelUpMsg = "";
+                            if (newLevelIndex > oldLevelIndex) {
+                                const bonusBong = newLevelIndex * 3;
+                                window.playerState.bong += bonusBong;
+                                levelUpMsg = `\n🎉 레벨업 축하합니다! 새로운 등급으로 진화하여 보너스 자산 [${bonusBong} B]가 지급되었습니다!`;
+                            }
+                            updateUI(); saveDataToCloud();
+                            await window.customAlert(`🧪 지혜의 비약을 마셨습니다!\n경험치가 100 증가했습니다.${levelUpMsg}`);
+                        } else if (id === 'item_gacha') {
+                            const reward = Math.floor(Math.random() * 101); // 0 ~ 100 B 무작위 추출
+                            window.playerState.bong += reward;
+                            
+                            updateUI(); saveDataToCloud();
+
+                            if (reward > 50) {
+                                playJackpotSound(); window.triggerConfetti();
+                                await window.customAlert(`🎉 대박!! 행운의 상자에서 [${reward} B]가 나왔습니다!\n(순이익: +${reward - 50} B)`);
+                            } else if (reward === 50) {
+                                playCoinSound();
+                                await window.customAlert(`🎁 행운의 상자에서 [${reward} B]가 나왔습니다.\n본전이네요!`);
+                            } else {
+                                await window.customAlert(`😭 아쉽네요... 행운의 상자에서 [${reward} B]가 나왔습니다.\n(손해: ${50 - reward} B)`);
+                            }
+                        }
                     }
                 } else { await window.customAlert(`❌ [골드 부족] ${price - window.playerState.bong}B가 더 필요합니다.`); }
             } else {
@@ -1276,6 +1353,7 @@
                 const stu = studentsData.find(s => s.id === String(i));
                 if(stu) {
                     const levelData = getLevelInfo(stu.xp || 0);
+                    const exactLevel = calculateExactLevel(stu.xp || 0); // 관리자 패널에도 레벨 적용
                     const jobsHtml = (stu.jobs || []).map(j => `<i class="fa-solid ${j.icon} ${j.color}" title="${j.name}"></i>`).join(' ');
                     
                     // ★ 마스터 표 안에도 미니 아바타 레이어 구성 적용 ★
@@ -1313,7 +1391,7 @@
                     </td>
                     <td class="px-3 py-2 sm:py-3 whitespace-nowrap flex items-center">
                         ${avatarHtml}
-                        <span class="text-[10px] sm:text-xs text-slate-400 ml-1">${levelData.info.name}</span>
+                        <span class="text-[10px] sm:text-xs text-slate-400 ml-1">Lv.${exactLevel} ${levelData.info.name}</span>
                     </td>
                     <td class="px-3 py-2 sm:py-3 text-sb-blue font-bold whitespace-nowrap cursor-pointer hover:bg-slate-700 rounded transition" onclick="window.editStudentStat('${stu.id}', 'xp', '${STUDENT_NAMES[i]}', ${stu.xp || 0})" title="클릭하여 수정">${(stu.xp||0).toLocaleString()} <i class="fa-solid fa-pen text-[10px] ml-1 text-slate-500"></i></td>
                     <td class="px-3 py-2 sm:py-3 text-sb-gold font-bold whitespace-nowrap cursor-pointer hover:bg-slate-700 rounded transition" onclick="window.editStudentStat('${stu.id}', 'bong', '${STUDENT_NAMES[i]}', ${stu.bong || 0})" title="클릭하여 수정">${(stu.bong||0).toFixed(1)} B <i class="fa-solid fa-pen text-[10px] ml-1 text-slate-500"></i></td>
@@ -1334,6 +1412,43 @@
                     tbody.innerHTML += `<tr class="border-b border-slate-700 text-slate-500 bg-slate-800/30"><td class="px-3 py-2 sm:py-3 whitespace-nowrap">${i}. ${STUDENT_NAMES[i]}</td><td class="px-3 py-2 sm:py-3">-</td><td class="px-3 py-2 sm:py-3">-</td><td class="px-3 py-2 sm:py-3">-</td><td class="px-3 py-2 sm:py-3">-</td><td class="px-3 py-2 sm:py-3 text-slate-600 text-[10px] sm:text-xs whitespace-nowrap text-center">⚫ 미접속</td></tr>`;
                 }
             }
+        }
+
+        // ==========================================
+        // 7. PWA 앱 설치 (홈 화면에 추가) 로직
+        // ==========================================
+        let deferredPrompt;
+        const btnInstallApp = document.getElementById('btnInstallApp');
+
+        // 안드로이드/크롬 설치 프롬프트 가로채기
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            btnInstallApp.classList.remove('hidden'); // 설치 가능할 때 버튼 보이기
+        });
+
+        // 아이폰(iOS) 접속 확인 후 버튼 강제 노출 (사파리 가이드용)
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) { btnInstallApp.classList.remove('hidden'); }
+
+        btnInstallApp.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                // 안드로이드 / 크롬
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') { btnInstallApp.classList.add('hidden'); }
+                deferredPrompt = null;
+            } else if (isIOS) {
+                // 아이폰(iOS) 사파리 사용자 안내 (애플 정책상 직접 설치 팝업 불가)
+                await window.customAlert("📱 아이폰(iPad) 홈 화면에 설치하는 법:\n\n1. 사파리(Safari) 브라우저 하단 정중앙의 [공유하기 ⍐] 아이콘을 누릅니다.\n2. 메뉴를 조금 내려서 [홈 화면에 추가 ⊞]를 선택하세요!\n\n그러면 바탕화면에 멋진 삼봉월드(👑) 앱이 짠! 생깁니다.");
+            } else {
+                await window.customAlert("이미 앱이 설치되어 있거나, 현재 브라우저에서는 설치 기능을 지원하지 않습니다.\n(크롬이나 사파리를 이용해주세요!)");
+            }
+        });
+
+        // 이미 독립 앱 모드(standalone)로 실행 중이면 설치 버튼 숨기기
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+            btnInstallApp.classList.add('hidden');
         }
 
         // 앱 구동
