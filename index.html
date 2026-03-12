@@ -411,7 +411,7 @@
 
         // 상점
         const SHOP_DATA = [
-            { id: 'item_shield', name: '절대 방패 (1회용)', desc: '전체 차감 공격을 1회 완벽 방어합니다.', price: 50, icon: 'fa-shield-halved', iconColor: 'text-indigo-400', isConsumable: true },
+            { id: 'item_shield', name: '절대 방패 (내구도 100)', desc: '마스터의 차감 공격을 최대 100(XP 또는 B)만큼 방어합니다.', price: 50, icon: 'fa-shield-halved', iconColor: 'text-indigo-400', isConsumable: true },
             { id: 's1', name: '뮤직 타임', desc: '쉬는 시간 신청곡 틀기', price: 15, icon: 'fa-music', iconColor: 'text-pink-400' },
             { id: 's2', name: '시간 왜곡', desc: '시간표 순서 바꾸기', price: 100, icon: 'fa-clock-rotate-left', iconColor: 'text-blue-400' },
             { id: 's3', name: '보드게임 타임', desc: '보드게임 시간 생성', price: 400, icon: 'fa-dice', iconColor: 'text-green-400' },
@@ -447,7 +447,7 @@
             "gm": "M", "guest": "M"
         };
 
-        window.playerState = { xp: 0, bong: 0.0, quests: {}, unlockedQuests: {}, jobs: [], ownedSkins: {}, equippedSkins: {}, hasShield: false, isGuest: false, isGM: false };
+        window.playerState = { xp: 0, bong: 0.0, quests: {}, unlockedQuests: {}, jobs: [], ownedSkins: {}, equippedSkins: {}, hasShield: false, shieldHP: 0, isGuest: false, isGM: false };
         window.allStudentsData = []; 
         window.gmData = null;
         window.globalSettings = { raidPassword: '1234' };
@@ -825,7 +825,7 @@
         });
 
         window.loginAsGuest = function() {
-            window.playerState = { xp: 8500, bong: 120.0, quests: {}, unlockedQuests: {}, jobs: [{name: '게스트', icon: 'fa-eye', color: 'text-slate-400'}], ownedSkins: {}, equippedSkins: {}, hasShield: false, isGuest: true, isGM: false };
+            window.playerState = { xp: 8500, bong: 120.0, quests: {}, unlockedQuests: {}, jobs: [{name: '게스트', icon: 'fa-eye', color: 'text-slate-400'}], ownedSkins: {}, equippedSkins: {}, hasShield: false, shieldHP: 100, isGuest: true, isGM: false };
             completeLoginUI(STUDENT_NAMES["guest"], false);
         };
 
@@ -952,14 +952,15 @@
         window.buyItem = async function(id, name, price, isConsumable) {
             if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드입니다.");
             if (isConsumable && id === 'item_shield') {
-                if (window.playerState.hasShield) return await window.customAlert("🛡️ 이미 절대 방패를 보유하고 있습니다.\n(광장에서 캐릭터 카드를 확인하세요!)");
                 if (window.playerState.bong >= price || window.playerState.isGM) {
-                    const ok = await window.customConfirm(`[${name}]을(를) ${price}B에 구매하시겠습니까?`);
+                    const currentHP = (window.playerState.shieldHP || 0) + (window.playerState.hasShield ? 100 : 0);
+                    const ok = await window.customConfirm(`[${name}]을(를) ${price}B에 구매하시겠습니까?\n(현재 방패 내구도: ${currentHP})`);
                     if(ok) {
                         if(!window.playerState.isGM) window.playerState.bong -= price;
-                        window.playerState.hasShield = true;
+                        window.playerState.shieldHP = currentHP + 100;
+                        window.playerState.hasShield = false; // 마이그레이션 적용
                         updateUI(); saveDataToCloud();
-                        await window.customAlert("🛡️ 절대 방패 장착 완료!\n마스터의 다음 전체 차감 공격을 1회 방어합니다.");
+                        await window.customAlert(`🛡️ 절대 방패 충전 완료!\n현재 방패 내구도: ${window.playerState.shieldHP}\n마스터의 차감 공격을 방어합니다.`);
                     }
                 } else { await window.customAlert(`❌ [골드 부족] ${price - window.playerState.bong}B가 더 필요합니다.`); }
             } else {
@@ -1042,7 +1043,7 @@
 
         window.bulkDeduct = async function(type, amount) {
             const typeName = type === 'xp' ? '경험치(XP)' : '자산(B)';
-            const ok = await window.customConfirm(`정말 모든 학생의 [${typeName}]를 ${amount}만큼 차감하시겠습니까?\n⚠️ 절대 방패를 보유한 학생은 차감을 방어하고 방패가 소멸됩니다.`);
+            const ok = await window.customConfirm(`정말 모든 학생의 [${typeName}]를 ${amount}만큼 차감하시겠습니까?\n⚠️ 방패(내구도)를 보유한 학생은 내구도가 우선 차감됩니다.`);
             if(!ok) return;
             
             let protectedCount = 0; let affectedCount = 0;
@@ -1050,12 +1051,35 @@
                 if (stu.id === 'gm') continue;
                 let docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + stu.id);
                 let updates = {};
+                let currentShieldHP = (stu.shieldHP || 0) + (stu.hasShield ? 100 : 0);
+                if (stu.hasShield) updates.hasShield = false; // 마이그레이션
+
+                let deductAmount = amount;
                 
-                if (stu.hasShield) { updates.hasShield = false; protectedCount++; } 
-                else { let newVal = (stu[type] || 0) - amount; if (newVal < 0) newVal = 0; updates[type] = newVal; affectedCount++; }
+                if (currentShieldHP > 0) {
+                    if (currentShieldHP >= deductAmount) {
+                        updates.shieldHP = currentShieldHP - deductAmount;
+                        deductAmount = 0;
+                        protectedCount++;
+                    } else {
+                        deductAmount -= currentShieldHP;
+                        updates.shieldHP = 0;
+                        protectedCount++; // 부분 방어
+                    }
+                }
+                
+                if (deductAmount > 0) {
+                    let newVal = (stu[type] || 0) - deductAmount;
+                    if (newVal < 0) newVal = 0;
+                    updates[type] = newVal;
+                    affectedCount++;
+                } else if (currentShieldHP > 0 && deductAmount === 0 && updates.shieldHP !== undefined) {
+                    // deductAmount가 0이 되어도 shieldHP 업데이트는 반영해야 함
+                }
+                
                 await setDoc(docRef, updates, { merge: true });
             }
-            await window.customAlert(`💥 일괄 차감 공격이 완료되었습니다.\n\n✔️ 피해를 입은 학생: ${affectedCount}명\n🛡️ 방어 성공(방패 소멸): ${protectedCount}명`);
+            await window.customAlert(`💥 일괄 차감 공격이 완료되었습니다.\n\n✔️ 피해를 입은 학생: ${affectedCount}명\n🛡️ 방패로 방어(또는 부분방어): ${protectedCount}명`);
         };
 
         window.editStudentStat = async function(stuId, type, stuName, currentVal) {
@@ -1070,6 +1094,40 @@
                     let updates = {}; updates[type] = type === 'bong' ? parseFloat(num.toFixed(1)) : Math.floor(num);
                     await setDoc(docRef, updates, { merge: true });
                 } else { await window.customAlert("❌ 올바른 숫자를 입력하세요."); }
+            }
+        };
+
+        window.resetRaids = async function() {
+            if (!window.playerState.isGM) return;
+            const ok = await window.customConfirm("⚠️ 모든 학생의 '전담 레이드(특수 퀘스트)' 완료 및 잠금 해제 상태를 초기화하시겠습니까?\n(일주일에 2회 이상 전담 수업이 있을 경우 다시 보상을 받도록 해줍니다.)");
+            if(!ok) return;
+            const raidIds = ['q_sci', 'q_prac', 'q_eng', 'q_dan', 'q_the'];
+            for (const stu of window.allStudentsData) {
+                if (stu.id === 'gm') continue;
+                let docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + stu.id);
+                let updates = {
+                    quests: stu.quests || {},
+                    unlockedQuests: stu.unlockedQuests || {}
+                };
+                let modified = false;
+                raidIds.forEach(qId => {
+                    if (updates.quests[qId]) { delete updates.quests[qId]; modified = true; }
+                    if (updates.unlockedQuests[qId]) { delete updates.unlockedQuests[qId]; modified = true; }
+                });
+                if (modified) await setDoc(docRef, updates, { merge: true });
+            }
+            await window.customAlert("✅ 모든 학생의 전담 레이드가 성공적으로 초기화되었습니다!");
+        };
+
+        window.changeStudentPin = async function(stuId, stuName) {
+            if (!window.playerState.isGM) return;
+            const newPin = await window.customPrompt(`[${stuName}] 학생의 새로운 4자리 비밀번호(PIN)를 입력하세요:`, "number");
+            if (newPin && newPin.length === 4) {
+                let docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + stuId);
+                await setDoc(docRef, { pin: newPin }, { merge: true });
+                await window.customAlert(`✅ ${stuName} 학생의 비밀번호가 [${newPin}](으)로 변경되었습니다.`);
+            } else if (newPin !== null) {
+                await window.customAlert("❌ 4자리 숫자로 정확히 입력해주세요.");
             }
         };
 
@@ -1093,7 +1151,7 @@
                     if (isAutoLogin) return; 
                     const isOk = await window.customConfirm(`[${STUDENT_NAMES[studentId]}]\n입력하신 [${pin}] 번호가 영구 비밀번호로 설정됩니다.\n접속하시겠습니까?`);
                     if(!isOk) return;
-                    window.playerState = { pin, xp: 0, bong: 0.0, quests: {}, unlockedQuests: {}, jobs: [], ownedSkins: {}, equippedSkins: {}, hasShield: false, isGuest: false, isGM };
+                    window.playerState = { pin, xp: 0, bong: 0.0, quests: {}, unlockedQuests: {}, jobs: [], ownedSkins: {}, equippedSkins: {}, hasShield: false, shieldHP: 0, isGuest: false, isGM };
                     await setDoc(docRef, window.playerState);
                 }
 
@@ -1154,7 +1212,8 @@
                             } 
                         }); 
                     }
-                    const shieldIcon = stu.hasShield ? '🛡️' : '';
+                    const currentShieldHP = (stu.shieldHP || 0) + (stu.hasShield ? 100 : 0);
+                    const shieldIcon = currentShieldHP > 0 ? `🛡️<span class="text-[10px] font-bold text-white bg-indigo-600 px-1 rounded-sm align-top shadow-md ml-0.5">${currentShieldHP}</span>` : '';
 
                     const avatarHtml = `
                         <div class="flex items-end text-xl sm:text-2xl mr-2 relative">
@@ -1165,7 +1224,10 @@
                     `;
 
                     tbody.innerHTML += `<tr id="admin-row-${stu.id}" class="border-b border-slate-700 hover:bg-slate-800 transition duration-300">
-                    <td class="px-3 py-2 sm:py-3 font-bold text-white whitespace-nowrap">${i}. ${STUDENT_NAMES[i]}</td>
+                    <td class="px-3 py-2 sm:py-3 font-bold text-white whitespace-nowrap cursor-pointer hover:bg-slate-700 rounded transition" onclick="window.changeStudentPin('${stu.id}', '${STUDENT_NAMES[i]}')" title="클릭하여 비밀번호 변경">
+                        ${i}. ${STUDENT_NAMES[i]}<br>
+                        <span class="text-[10px] text-slate-400 font-normal">PIN: <span class="text-sb-gold tracking-widest">${stu.pin || '미설정'}</span></span>
+                    </td>
                     <td class="px-3 py-2 sm:py-3 whitespace-nowrap flex items-center">
                         ${avatarHtml}
                         <span class="text-[10px] sm:text-xs text-slate-400 ml-1">${levelData.info.name}</span>
