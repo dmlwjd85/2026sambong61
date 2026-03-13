@@ -134,9 +134,10 @@
                         <option value="4">4. 김정훈</option><option value="5">5. 박문경</option><option value="6">6. 박소윤</option>
                         <option value="7">7. 박하율</option><option value="8">8. 박현수</option><option value="9">9. 백시율</option>
                         <option value="10">10. 임은영</option><option value="11">11. 조이담</option><option value="12">12. 황훈태</option>
-                        <option value="13">13. 석서영</option>
+                        <option value="13" class="text-pink-300">13. 석서영 (분교)</option>
                         <option disabled>─── 관리자 ───</option>
                         <option value="gm" class="text-sb-gold">👑 마스터 J (담임교사)</option>
+                        <option value="gm_a" class="text-pink-400">🌸 마스터 A (분교 전담)</option>
                     </select>
                 </div>
                 
@@ -295,7 +296,7 @@
                             <span><i class="fa-solid fa-list-check text-emerald-400 mr-2"></i> 오늘의 퀘스트 (To-Do)</span>
                             <span class="text-[10px] font-normal text-slate-400 bg-slate-900 px-2 py-1 rounded">터치하여 바로 인증</span>
                         </h3>
-                        <div id="todoContainer" class="space-y-3">
+                        <div id="todoContainer" class="space-y-3 max-h-64 overflow-y-auto pr-2">
                             <!-- JS에서 일일 퀘스트 자동 렌더링 -->
                         </div>
                     </div>
@@ -303,71 +304,76 @@
             </div>
         </section>
 
-        <!-- ★ 3. 마스터 관찰구역 (GM 전용 - 완벽 복구본 유지) ★ -->
+        <!-- ★ 3. 마스터 관찰구역 (GM/GMA 전용) ★ -->
         <section id="adminDashboard" class="hidden scroll-mt-20">
-            <div class="mb-4 sm:mb-8">
-                <h2 class="text-2xl sm:text-3xl font-display text-sb-red flex items-center gap-2 sm:gap-3"><i class="fa-solid fa-eye"></i> 마스터 관찰구역</h2>
-                <p class="text-xs sm:text-sm text-slate-400 mt-1 sm:mt-2">13명 플레이어의 실시간 데이터 및 일괄/개별 편집 패널입니다.</p>
+            <div class="mb-4 sm:mb-8 flex justify-between items-end">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-display text-sb-red flex items-center gap-2 sm:gap-3"><i class="fa-solid fa-eye"></i> 마스터 관찰구역</h2>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1 sm:mt-2" id="adminSubtitle">플레이어의 실시간 데이터 및 개별/일괄 편집 패널입니다.</p>
+                </div>
             </div>
 
-            <div class="glass-panel p-4 sm:p-6 rounded-2xl mb-4 border border-purple-500/50 shadow-[0_0_15px_rgba(168,85,247,0.1)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h3 class="text-white font-bold flex items-center text-sm sm:text-base"><i class="fa-solid fa-key text-purple-400 mr-2"></i> 전담교사 레이드 관리</h3>
-                    <p class="text-[10px] sm:text-xs text-slate-400 mt-1">현재 설정된 비밀번호: <span id="currentRaidPwDisplay" class="text-purple-300 font-bold tracking-widest text-base sm:text-lg ml-1">1234</span></p>
+            <!-- 마스터 J 에게만 보이는 일괄 처리 패널 -->
+            <div id="gmOnlyPanels">
+                <div class="glass-panel p-4 sm:p-6 rounded-2xl mb-4 border border-purple-500/50 shadow-[0_0_15px_rgba(168,85,247,0.1)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h3 class="text-white font-bold flex items-center text-sm sm:text-base"><i class="fa-solid fa-key text-purple-400 mr-2"></i> 전담교사 레이드 관리</h3>
+                        <p class="text-[10px] sm:text-xs text-slate-400 mt-1">현재 설정된 비밀번호: <span id="currentRaidPwDisplay" class="text-purple-300 font-bold tracking-widest text-base sm:text-lg ml-1">1234</span></p>
+                    </div>
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <button onclick="window.setRaidPassword()" class="flex-1 sm:flex-none bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-3 sm:px-4 rounded-xl shadow transition text-xs sm:text-sm whitespace-nowrap">비번 변경</button>
+                        <button onclick="window.resetRaids()" class="flex-1 sm:flex-none bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-3 sm:px-4 rounded-xl shadow transition text-xs sm:text-sm whitespace-nowrap"><i class="fa-solid fa-rotate-right"></i> 레이드 초기화</button>
+                    </div>
                 </div>
-                <div class="flex gap-2 w-full sm:w-auto">
-                    <button onclick="window.setRaidPassword()" class="flex-1 sm:flex-none bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-3 sm:px-4 rounded-xl shadow transition text-xs sm:text-sm whitespace-nowrap">비번 변경</button>
-                    <button onclick="window.resetRaids()" class="flex-1 sm:flex-none bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-3 sm:px-4 rounded-xl shadow transition text-xs sm:text-sm whitespace-nowrap"><i class="fa-solid fa-rotate-right"></i> 레이드 초기화</button>
-                </div>
-            </div>
-            
-            <div class="glass-panel p-4 sm:p-6 rounded-2xl mb-4 border border-sb-gold/50 shadow-[0_0_15px_rgba(251,191,36,0.1)]">
-                <h3 class="text-white font-bold mb-3 flex items-center"><i class="fa-solid fa-wand-magic-sparkles text-sb-gold mr-2"></i> 학생 전체 일괄 지급 및 차감</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- 일괄 지급 -->
-                    <div class="bg-slate-800/50 p-4 rounded-xl border border-emerald-500/30">
-                        <span class="text-emerald-400 text-sm font-bold mb-3 block"><i class="fa-solid fa-plus"></i> 일괄 지급 (전체 학생)</span>
-                        <div class="flex flex-col gap-3">
-                            <div class="flex items-center gap-2">
-                                <span class="text-sb-blue text-xs font-bold w-12">XP</span>
-                                <div class="flex flex-wrap gap-2 flex-1">
-                                    <button onclick="window.bulkAdd('xp', 1)" class="flex-1 bg-slate-700 hover:bg-sb-blue text-white text-xs py-2 rounded transition font-bold shadow">+1</button>
-                                    <button onclick="window.bulkAdd('xp', 5)" class="flex-1 bg-slate-700 hover:bg-sb-blue text-white text-xs py-2 rounded transition font-bold shadow">+5</button>
-                                    <button onclick="window.bulkAdd('xp', 10)" class="flex-1 bg-slate-700 hover:bg-sb-blue text-white text-xs py-2 rounded transition font-bold shadow">+10</button>
-                                    <button onclick="window.bulkAdd('xp', 100)" class="flex-1 bg-slate-700 hover:bg-sb-blue text-white text-xs py-2 rounded transition font-bold shadow">+100</button>
+                
+                <div class="glass-panel p-4 sm:p-6 rounded-2xl mb-4 border border-sb-gold/50 shadow-[0_0_15px_rgba(251,191,36,0.1)]">
+                    <h3 class="text-white font-bold mb-3 flex items-center"><i class="fa-solid fa-wand-magic-sparkles text-sb-gold mr-2"></i> 학생 전체 일괄 지급 및 차감</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- 일괄 지급 -->
+                        <div class="bg-slate-800/50 p-4 rounded-xl border border-emerald-500/30">
+                            <span class="text-emerald-400 text-sm font-bold mb-3 block"><i class="fa-solid fa-plus"></i> 일괄 지급 (전체 학생)</span>
+                            <div class="flex flex-col gap-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sb-blue text-xs font-bold w-12">XP</span>
+                                    <div class="flex flex-wrap gap-2 flex-1">
+                                        <button onclick="window.bulkAdd('xp', 1)" class="flex-1 bg-slate-700 hover:bg-sb-blue text-white text-xs py-2 rounded transition font-bold shadow">+1</button>
+                                        <button onclick="window.bulkAdd('xp', 5)" class="flex-1 bg-slate-700 hover:bg-sb-blue text-white text-xs py-2 rounded transition font-bold shadow">+5</button>
+                                        <button onclick="window.bulkAdd('xp', 10)" class="flex-1 bg-slate-700 hover:bg-sb-blue text-white text-xs py-2 rounded transition font-bold shadow">+10</button>
+                                        <button onclick="window.bulkAdd('xp', 100)" class="flex-1 bg-slate-700 hover:bg-sb-blue text-white text-xs py-2 rounded transition font-bold shadow">+100</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-sb-gold text-xs font-bold w-12">B</span>
-                                <div class="flex flex-wrap gap-2 flex-1">
-                                    <button onclick="window.bulkAdd('bong', 1)" class="flex-1 bg-slate-700 hover:bg-sb-gold text-white text-xs py-2 rounded transition font-bold shadow text-slate-900">+1</button>
-                                    <button onclick="window.bulkAdd('bong', 5)" class="flex-1 bg-slate-700 hover:bg-sb-gold text-white text-xs py-2 rounded transition font-bold shadow text-slate-900">+5</button>
-                                    <button onclick="window.bulkAdd('bong', 10)" class="flex-1 bg-slate-700 hover:bg-sb-gold text-white text-xs py-2 rounded transition font-bold shadow text-slate-900">+10</button>
-                                    <button onclick="window.bulkAdd('bong', 100)" class="flex-1 bg-slate-700 hover:bg-sb-gold text-white text-xs py-2 rounded transition font-bold shadow text-slate-900">+100</button>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sb-gold text-xs font-bold w-12">B</span>
+                                    <div class="flex flex-wrap gap-2 flex-1">
+                                        <button onclick="window.bulkAdd('bong', 1)" class="flex-1 bg-slate-700 hover:bg-sb-gold text-white text-xs py-2 rounded transition font-bold shadow text-slate-900">+1</button>
+                                        <button onclick="window.bulkAdd('bong', 5)" class="flex-1 bg-slate-700 hover:bg-sb-gold text-white text-xs py-2 rounded transition font-bold shadow text-slate-900">+5</button>
+                                        <button onclick="window.bulkAdd('bong', 10)" class="flex-1 bg-slate-700 hover:bg-sb-gold text-white text-xs py-2 rounded transition font-bold shadow text-slate-900">+10</button>
+                                        <button onclick="window.bulkAdd('bong', 100)" class="flex-1 bg-slate-700 hover:bg-sb-gold text-white text-xs py-2 rounded transition font-bold shadow text-slate-900">+100</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- 일괄 차감 -->
-                    <div class="bg-slate-800/50 p-4 rounded-xl border border-sb-red/30">
-                        <span class="text-sb-red text-sm font-bold mb-3 block"><i class="fa-solid fa-minus"></i> 일괄 차감 (방패 소지자 1회 방어)</span>
-                        <div class="flex flex-col gap-3">
-                            <div class="flex items-center gap-2">
-                                <span class="text-sb-blue text-xs font-bold w-12">XP</span>
-                                <div class="flex flex-wrap gap-2 flex-1">
-                                    <button onclick="window.bulkDeduct('xp', 1)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-1</button>
-                                    <button onclick="window.bulkDeduct('xp', 5)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-5</button>
-                                    <button onclick="window.bulkDeduct('xp', 10)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-10</button>
-                                    <button onclick="window.bulkDeduct('xp', 100)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-100</button>
+                        <!-- 일괄 차감 -->
+                        <div class="bg-slate-800/50 p-4 rounded-xl border border-sb-red/30">
+                            <span class="text-sb-red text-sm font-bold mb-3 block"><i class="fa-solid fa-minus"></i> 일괄 차감 (방패 소지자 1회 방어)</span>
+                            <div class="flex flex-col gap-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sb-blue text-xs font-bold w-12">XP</span>
+                                    <div class="flex flex-wrap gap-2 flex-1">
+                                        <button onclick="window.bulkDeduct('xp', 1)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-1</button>
+                                        <button onclick="window.bulkDeduct('xp', 5)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-5</button>
+                                        <button onclick="window.bulkDeduct('xp', 10)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-10</button>
+                                        <button onclick="window.bulkDeduct('xp', 100)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-100</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-sb-gold text-xs font-bold w-12">B</span>
-                                <div class="flex flex-wrap gap-2 flex-1">
-                                    <button onclick="window.bulkDeduct('bong', 1)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-1</button>
-                                    <button onclick="window.bulkDeduct('bong', 5)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-5</button>
-                                    <button onclick="window.bulkDeduct('bong', 10)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-10</button>
-                                    <button onclick="window.bulkDeduct('bong', 100)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-100</button>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sb-gold text-xs font-bold w-12">B</span>
+                                    <div class="flex flex-wrap gap-2 flex-1">
+                                        <button onclick="window.bulkDeduct('bong', 1)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-1</button>
+                                        <button onclick="window.bulkDeduct('bong', 5)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-5</button>
+                                        <button onclick="window.bulkDeduct('bong', 10)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-10</button>
+                                        <button onclick="window.bulkDeduct('bong', 100)" class="flex-1 bg-slate-700 hover:bg-sb-red text-white text-xs py-2 rounded transition font-bold shadow">-100</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -401,7 +407,7 @@
         <section id="plaza" class="scroll-mt-20">
             <div class="mb-4 sm:mb-8">
                 <h2 class="text-xl sm:text-3xl font-display text-emerald-400 flex items-center gap-2 sm:gap-3"><i class="fa-solid fa-users"></i> 길드 광장</h2>
-                <p class="text-[10px] sm:text-sm text-slate-400 mt-1 sm:mt-2">나와 친구들의 실시간 캐릭터 외형입니다. <strong class="text-sb-gold">마스터 J(선생님)는 카드 하단의 +,- 버튼으로 즉각 보상/차감이 가능합니다.</strong></p>
+                <p class="text-[10px] sm:text-sm text-slate-400 mt-1 sm:mt-2">나와 친구들의 실시간 캐릭터 외형입니다. <strong class="text-sb-gold">마스터(선생님)는 카드 하단의 +,- 버튼으로 즉각 보상/차감이 가능합니다.</strong></p>
             </div>
             <div class="glass-panel p-4 sm:p-8 rounded-3xl overflow-hidden shadow-2xl">
                 <div class="flex flex-wrap gap-3 sm:gap-6 justify-center items-end min-h-[160px]" id="plazaContainer">
@@ -479,7 +485,7 @@
 
         <footer class="text-center text-slate-500 py-8 sm:py-12 border-t border-slate-800 px-4 mt-12 sm:mt-20">
             <p class="font-display text-lg sm:text-2xl text-slate-300 mb-2 sm:mb-4 break-keep">"당신의 모든 행동은 데이터가 되어 당신을 성장시킵니다."</p>
-            <p class="text-xs sm:text-sm font-bold text-emerald-400">- 삼봉월드 창조자 마스터 J -</p>
+            <p class="text-xs sm:text-sm font-bold text-emerald-400">- 삼봉월드 창조자 마스터 J & A -</p>
         </footer>
     </div>
 
@@ -487,7 +493,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // ★ writeBatch를 추가하여 일괄 쓰기 트래픽을 대폭 감소시켰습니다.
         import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ==========================================
@@ -516,6 +521,8 @@
             { id: 'q4', type: 'daily', name: '뉴비 도우미', desc: '라온반 및 도움이 필요한 친구 지원', xp: 50, bong: 7.0, icon: 'fa-hands-holding-child', color: 'text-pink-300' },
             { id: 'q6', type: 'daily', name: '다리 근력강화', desc: '스쿼트 50회', xp: 20, bong: 5.0, icon: 'fa-dumbbell', color: 'text-blue-300' },
             { id: 'q7', type: 'daily', name: '밸런스 강화', desc: '밸런스 보드 30초', xp: 20, bong: 5.0, icon: 'fa-person-snowboarding', color: 'text-emerald-300' },
+            { id: 'q8', type: 'daily', name: '잔반 제로', desc: '급식 다 먹기', xp: 20, bong: 2.0, icon: 'fa-utensils', color: 'text-orange-300' },
+            { id: 'q9', type: 'daily', name: '클린 스위퍼', desc: '학교 주변 및 교실 쓰레기 줍기 (3개 이상)', xp: 30, bong: 3.0, icon: 'fa-broom', color: 'text-teal-300' },
             { id: 'q2', type: 'weekly', name: '연속 등교 보너스', desc: '일주일간 무단 결석 없는 성실한 등교', xp: 50, bong: 2.0, icon: 'fa-calendar-check', color: 'text-white' },
             { id: 'q_sci', type: 'locked', name: '던전 레이드 (과학)', desc: '과학 전담 시간 완벽 공략', xp: 100, bong: 5.0, icon: 'fa-flask', color: 'text-purple-300' },
             { id: 'q_prac', type: 'locked', name: '던전 레이드 (실과)', desc: '실과 전담 시간 완벽 공략', xp: 100, bong: 5.0, icon: 'fa-hammer', color: 'text-purple-300' },
@@ -568,11 +575,11 @@
             { max: Infinity, name: '전설', prop: '🐦‍🔥', borderColor: 'border-sb-red', bgColor: 'bg-red-900/30', textColor: 'text-sb-red', anim: 'avatar-legend' }
         ];
 
-        const STUDENT_NAMES = { "1": "김단엘", "2": "김라희", "3": "김민지", "4": "김정훈", "5": "박문경", "6": "박소윤", "7": "박하율", "8": "박현수", "9": "백시율", "10": "임은영", "11": "조이담", "12": "황훈태", "13": "석서영", "gm": "마스터 J", "guest": "손님" };
-        const STUDENT_GENDERS = { "1": "M", "2": "F", "3": "F", "4": "M", "5": "M", "6": "F", "7": "F", "8": "M", "9": "M", "10": "F", "11": "M", "12": "M", "13": "F", "gm": "M", "guest": "M" };
+        const STUDENT_NAMES = { "1": "김단엘", "2": "김라희", "3": "김민지", "4": "김정훈", "5": "박문경", "6": "박소윤", "7": "박하율", "8": "박현수", "9": "백시율", "10": "임은영", "11": "조이담", "12": "황훈태", "13": "석서영", "gm": "마스터 J", "gm_a": "마스터 A", "guest": "손님" };
+        const STUDENT_GENDERS = { "1": "M", "2": "F", "3": "F", "4": "M", "5": "M", "6": "F", "7": "F", "8": "M", "9": "M", "10": "F", "11": "M", "12": "M", "13": "F", "gm": "M", "gm_a": "F", "guest": "M" };
 
-        window.playerState = { xp: 0, bong: 0.0, quests: {}, unlockedQuests: {}, jobs: [], ownedSkins: {}, equippedSkins: {}, hasShield: false, shieldHP: 0, isGuest: false, isGM: false };
-        window.allStudentsData = []; window.gmData = null; window.globalSettings = { raidPassword: '1234' };
+        window.playerState = { xp: 0, bong: 0.0, quests: {}, unlockedQuests: {}, jobs: [], ownedSkins: {}, equippedSkins: {}, hasShield: false, shieldHP: 0, isGuest: false, isGM: false, isGMA: false, isAdmin: false };
+        window.allStudentsData = []; window.gmData = null; window.gmaData = null; window.globalSettings = { raidPassword: '1234' };
         let db, auth, currentStudentDocRef = null; let unsubscribeGlobal = null; let unsubscribeSettings = null;
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'sambong-class-2026';
 
@@ -580,7 +587,7 @@
         function getLevelInfo(xp) { for(let i=0; i<LEVEL_DATA.length; i++) { if(xp <= LEVEL_DATA[i].max) return {info: LEVEL_DATA[i], index: i}; } return {info: LEVEL_DATA[LEVEL_DATA.length-1], index: LEVEL_DATA.length-1}; }
 
         // ==========================================
-        // ★ NPC 마스터 J 대화(스토리텔링) 로직 ★
+        // ★ NPC 마스터 대화(스토리텔링) 로직 ★
         // ==========================================
         const npcDialogs = [
             '"환영한다, 용사여. 모험의 첫 번째 시즌이 시작되었다. 성실한 출석과 훈련으로 너의 잠재력을 폭발시켜라! 명예의 전당이 너를 기다리고 있다."',
@@ -650,27 +657,29 @@
 
                 onAuthStateChanged(auth, user => {
                     if (user) {
-                        // ★ [수정 1] 중복 리스너 방지: 전역 학생 리스너 하나로 통합
                         if (unsubscribeGlobal) unsubscribeGlobal();
                         unsubscribeGlobal = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'students'), snap => {
-                            const students = []; let gmD = null;
-                            snap.forEach(d => { if(d.id === 'student_gm') gmD = {id:'gm', ...d.data()}; else students.push({id: d.id.replace('student_',''), ...d.data()}); });
-                            window.allStudentsData = students; window.gmData = gmD;
+                            const students = []; let gmD = null, gmaD = null;
+                            snap.forEach(d => { 
+                                if(d.id === 'student_gm') gmD = {id:'gm', ...d.data()}; 
+                                else if(d.id === 'student_gm_a') gmaD = {id:'gm_a', ...d.data()}; 
+                                else students.push({id: d.id.replace('student_',''), ...d.data()}); 
+                            });
+                            window.allStudentsData = students; window.gmData = gmD; window.gmaData = gmaD;
                             
-                            // 내 상태 실시간 동기화 (개별 리스너 제거 효과)
                             if (!window.playerState.isGuest) {
                                 const myId = localStorage.getItem('sambong_student_id');
                                 if (myId) {
-                                    const myData = myId === 'gm' ? gmD : students.find(s => s.id === myId);
+                                    const myData = myId === 'gm' ? gmD : (myId === 'gm_a' ? gmaD : students.find(s => s.id === myId));
                                     if (myData) {
-                                        window.playerState = { ...myData, isGuest: false, isGM: myId === 'gm' };
+                                        window.playerState = { ...myData, isGuest: false, isGM: myId === 'gm', isGMA: myId === 'gm_a', isAdmin: (myId === 'gm' || myId === 'gm_a') };
                                         updateUI();
                                     }
                                 }
                             }
 
-                            if (window.playerState && window.playerState.isGM) window.renderAdminTable(students);
-                            window.renderPlaza(students, gmD);
+                            if (window.playerState && window.playerState.isAdmin) window.renderAdminTable(students);
+                            window.renderPlaza(students, gmD, gmaD);
                             window.renderHallOfFame(students);
                         }, e => console.error(e));
 
@@ -736,7 +745,7 @@
             } else { hofSec.classList.add('hidden'); }
         };
 
-        window.renderPlaza = function(studentsData, gmData) {
+        window.renderPlaza = function(studentsData, gmData, gmaData) {
             const container = document.getElementById('plazaContainer');
             if(!container) return;
             let html = '';
@@ -744,12 +753,15 @@
             const createCard = (data, isGMCard, idLabel) => {
                 const emptyId = idLabel.split('.')[0].trim();
                 const targetId = data ? data.id : emptyId;
-                const gmOnClick = window.playerState.isGM && !isGMCard ? `onclick="window.plazaClickXP('${targetId}', this)"` : '';
-                const gmCursor = window.playerState.isGM && !isGMCard ? 'cursor-pointer hover:scale-[1.03] active:scale-95' : '';
+                
+                // 마스터 권한 확인 (마스터 J는 전체, 마스터 A는 13번만 제어 가능)
+                const canEdit = window.playerState.isGM || (window.playerState.isGMA && targetId === '13');
+                const gmOnClick = canEdit && !isGMCard ? `onclick="window.plazaClickXP('${targetId}', this)"` : '';
+                const gmCursor = canEdit && !isGMCard ? 'cursor-pointer hover:scale-[1.03] active:scale-95' : '';
 
                 if (!data) return `<div class="flex flex-col items-center p-3 sm:p-4 rounded-xl border-2 border-slate-700 bg-slate-800/30 w-[104px] sm:w-36 relative opacity-50 shadow-inner"><div class="text-3xl sm:text-4xl mb-2 opacity-30 grayscale">👤</div><div class="font-bold text-slate-500 bg-slate-900 px-2 py-1 rounded-md text-[10px] sm:text-xs text-center w-full truncate border border-slate-700">${idLabel}</div></div>`;
 
-                const isMe = (window.playerState.isGM && isGMCard) || (!window.playerState.isGM && !isGMCard && data.id === localStorage.getItem('sambong_student_id'));
+                const isMe = (window.playerState.isAdmin && isGMCard && data.id === localStorage.getItem('sambong_student_id')) || (!window.playerState.isAdmin && !isGMCard && data.id === localStorage.getItem('sambong_student_id'));
                 const displayData = isMe ? { ...data, ...window.playerState } : data;
                 const lv = getLevelInfo(displayData.xp || 0);
                 const exactLevel = calculateExactLevel(displayData.xp || 0);
@@ -773,7 +785,7 @@
                 const shieldHtml = currentShieldHP > 0 ? `<div class="absolute -top-3 -left-3 drop-shadow-lg z-30 animate-pulse flex flex-col items-center"><span class="text-2xl sm:text-3xl">🛡️</span><span class="text-[10px] font-bold text-white bg-indigo-600 px-1 rounded-sm -mt-2 leading-tight shadow-md border border-indigo-400">${currentShieldHP}</span></div>` : '';
 
                 let gmControls = '';
-                if (window.playerState.isGM && !isGMCard) {
+                if (canEdit && !isGMCard) {
                     gmControls = `
                     <div class="w-full mt-2 pt-2 border-t border-slate-700/50 flex flex-col gap-1 z-20 relative cursor-default" onclick="event.stopPropagation();">
                         <div class="flex justify-between items-center gap-1"><button onclick="window.quickReward('xp', 5, '${targetId}', this)" class="flex-1 bg-sb-blue/20 text-sb-blue text-[11px] font-bold py-1.5 rounded hover:bg-sb-blue hover:text-white transition shadow-sm">+5</button><span class="text-[9px] text-slate-400 font-bold w-4 text-center">XP</span><button onclick="window.quickReward('xp', -5, '${targetId}', this)" class="flex-1 bg-slate-700 text-slate-300 text-[11px] font-bold py-1.5 rounded hover:bg-sb-red hover:text-white transition shadow-sm">-5</button></div>
@@ -782,8 +794,16 @@
                 }
 
                 if (isGMCard) {
-                    const border = customBorder || 'border-sb-gold'; const glow = customGlow || 'shadow-[0_0_25px_rgba(251,191,36,0.6)]';
-                    return `<div class="flex flex-col items-center p-4 sm:p-5 rounded-2xl border-2 w-36 sm:w-48 relative transition-all duration-300 ${glow} ${border} bg-slate-900 ${meHighlight} mx-2 z-10">${shieldHtml}<div class="text-5xl sm:text-6xl avatar-legend mb-3 z-10">🐉<span class="absolute -bottom-2 -right-2 text-2xl sm:text-3xl">🔥</span></div><div class="text-[10px] sm:text-xs font-black text-sb-gold tracking-widest mb-1">창조자</div><div class="font-bold text-slate-900 bg-gradient-to-r from-sb-gold to-yellow-300 px-3 py-1 rounded-lg text-xs sm:text-sm w-full text-center border border-yellow-500">마스터 J</div></div>`;
+                    const isMasterA = data.id === 'gm_a';
+                    const masterTitle = isMasterA ? '분교 전담' : '창조자';
+                    const masterEmoji = isMasterA ? '🌸' : '🐉';
+                    const masterName = isMasterA ? '마스터 A' : '마스터 J';
+                    const nameColor = isMasterA ? 'from-pink-400 to-rose-300 border-pink-500' : 'from-sb-gold to-yellow-300 border-yellow-500';
+                    const titleColor = isMasterA ? 'text-pink-400' : 'text-sb-gold';
+                    const border = customBorder || (isMasterA ? 'border-pink-500' : 'border-sb-gold'); 
+                    const glow = customGlow || (isMasterA ? 'shadow-[0_0_25px_rgba(244,114,182,0.6)]' : 'shadow-[0_0_25px_rgba(251,191,36,0.6)]');
+                    
+                    return `<div class="flex flex-col items-center p-4 sm:p-5 rounded-2xl border-2 w-36 sm:w-48 relative transition-all duration-300 ${glow} ${border} bg-slate-900 ${meHighlight} mx-2 z-10">${shieldHtml}<div class="text-5xl sm:text-6xl avatar-legend mb-3 z-10">${masterEmoji}<span class="absolute -bottom-2 -right-2 text-2xl sm:text-3xl">🔥</span></div><div class="text-[10px] sm:text-xs font-black ${titleColor} tracking-widest mb-1">${masterTitle}</div><div class="font-bold text-slate-900 bg-gradient-to-r ${nameColor} px-3 py-1 rounded-lg text-xs sm:text-sm w-full text-center border">${masterName}</div></div>`;
                 } else {
                     const border = customBorder || lv.info.borderColor; const glow = customGlow || 'shadow-md';
                     const jobsHtml = (displayData.jobs || []).map((j, i) => `<div class="job-badge ${j.color} w-4 h-4 sm:w-5 sm:h-5" style="z-index: ${10 - i}"><i class="fa-solid ${j.icon} text-[8px] sm:text-[10px]"></i></div>`).join('');
@@ -793,7 +813,13 @@
             };
 
             html += createCard(gmData, true, '마스터 J');
-            for(let i=1; i<=13; i++) { const stu = studentsData.find(s => s.id === String(i)); html += createCard(stu, false, `${i}. ${STUDENT_NAMES[i]}`); }
+            if(gmaData || window.playerState.isGMA) html += createCard(gmaData || {id: 'gm_a'}, true, '마스터 A');
+            
+            for(let i=1; i<=13; i++) { 
+                const stu = studentsData.find(s => s.id === String(i)); 
+                const suffix = i === 13 ? ' (분교)' : '';
+                html += createCard(stu, false, `${i}. ${STUDENT_NAMES[i]}${suffix}`); 
+            }
             container.innerHTML = html;
         };
 
@@ -803,6 +829,10 @@
             tbody.innerHTML = '';
             for(let i=1; i<=13; i++) { 
                 const stu = studentsData.find(s => s.id === String(i));
+                
+                // 마스터 A는 서영이(13번)만 수정 가능, 다른 학생은 보기만 가능 (흐리게 표시)
+                const canEdit = window.playerState.isGM || (window.playerState.isGMA && String(i) === '13');
+                
                 if(stu) {
                     const lvData = getLevelInfo(stu.xp || 0); const exactLv = calculateExactLevel(stu.xp || 0);
                     const jobsHtml = (stu.jobs || []).map(j => `<i class="fa-solid ${j.icon} ${j.color}" title="${j.name}"></i>`).join(' ');
@@ -815,15 +845,22 @@
 
                     const avatarHtml = `<div class="flex items-end text-xl sm:text-2xl mr-2"><div class="relative inline-block leading-none">${faceEmoji}${skinOverlays}</div><span class="text-xs sm:text-sm leading-none ml-1 mb-0.5 animate-pulse">${lvData.info.prop}</span><span class="text-sm ml-1 animate-bounce leading-none mb-1">${shieldIcon}</span></div>`;
 
-                    tbody.innerHTML += `<tr id="admin-row-${stu.id}" class="border-b border-slate-700 hover:bg-slate-800 transition">
-                    <td class="px-3 py-2 sm:py-3 font-bold text-white whitespace-nowrap cursor-pointer hover:bg-slate-700 rounded transition" onclick="window.changeStudentPin('${stu.id}', '${STUDENT_NAMES[i]}')" title="클릭하여 비밀번호 변경">${i}. ${STUDENT_NAMES[i]}<br><span class="text-[10px] text-slate-400 font-normal">PIN: <span class="cursor-pointer text-slate-500 hover:text-sb-gold transition bg-slate-800 px-1.5 py-0.5 rounded shadow-inner" onclick="event.stopPropagation(); this.innerText = this.innerText === '****' ? '${stu.pin || '미설정'}' : '****';">****</span></span></td>
+                    const editPen = canEdit ? `<i class="fa-solid fa-pen text-[10px] ml-1 text-slate-500"></i>` : '';
+                    const clickName = canEdit ? `onclick="window.changeStudentPin('${stu.id}', '${STUDENT_NAMES[i]}')" class="px-3 py-2 sm:py-3 font-bold text-white whitespace-nowrap cursor-pointer hover:bg-slate-700 rounded transition" title="클릭하여 비밀번호 변경"` : `class="px-3 py-2 sm:py-3 font-bold text-white whitespace-nowrap"`;
+                    const clickXP = canEdit ? `onclick="window.editStudentStat('${stu.id}', 'xp', '${STUDENT_NAMES[i]}', ${stu.xp || 0})" class="px-3 py-2 sm:py-3 text-sb-blue font-bold whitespace-nowrap cursor-pointer hover:bg-slate-700 rounded transition" title="클릭하여 수정"` : `class="px-3 py-2 sm:py-3 text-sb-blue font-bold whitespace-nowrap"`;
+                    const clickBong = canEdit ? `onclick="window.editStudentStat('${stu.id}', 'bong', '${STUDENT_NAMES[i]}', ${stu.bong || 0})" class="px-3 py-2 sm:py-3 text-sb-gold font-bold whitespace-nowrap cursor-pointer hover:bg-slate-700 rounded transition" title="클릭하여 수정"` : `class="px-3 py-2 sm:py-3 text-sb-gold font-bold whitespace-nowrap"`;
+                    
+                    const quickControls = canEdit ? `<div class="flex flex-col gap-1 w-full"><div class="flex gap-1 w-full"><button onclick="window.quickReward('xp', 5, '${stu.id}', this)" class="flex-1 bg-sb-blue/20 hover:bg-sb-blue text-sb-blue hover:text-white border border-sb-blue/50 px-2 py-1.5 rounded text-[10px] sm:text-xs font-black transition-all shadow-md">+5 XP</button><button onclick="window.quickReward('xp', -5, '${stu.id}', this)" class="flex-1 bg-slate-700 hover:bg-sb-red text-slate-300 hover:text-white border border-slate-600 hover:border-sb-red px-2 py-1.5 rounded text-[10px] sm:text-xs font-black transition-all shadow-md">-5 XP</button></div><div class="flex gap-1 w-full"><button onclick="window.quickReward('bong', 1, '${stu.id}', this)" class="flex-1 bg-sb-gold/20 hover:bg-sb-gold text-yellow-400 hover:text-slate-900 border border-sb-gold/50 px-2 py-1.5 rounded text-[10px] sm:text-xs font-black transition-all shadow-md">+1 B</button><button onclick="window.quickReward('bong', -1, '${stu.id}', this)" class="flex-1 bg-slate-700 hover:bg-sb-red text-slate-300 hover:text-white border border-slate-600 hover:border-sb-red px-2 py-1.5 rounded text-[10px] sm:text-xs font-black transition-all shadow-md">-1 B</button></div></div>` : `<div class="text-[10px] text-slate-500 text-center w-full">권한 없음</div>`;
+
+                    tbody.innerHTML += `<tr id="admin-row-${stu.id}" class="border-b border-slate-700 hover:bg-slate-800 transition ${!canEdit ? 'opacity-50 grayscale' : ''}">
+                    <td ${clickName}>${i}. ${STUDENT_NAMES[i]}<br><span class="text-[10px] text-slate-400 font-normal">PIN: <span ${canEdit ? 'class="cursor-pointer text-slate-500 hover:text-sb-gold transition bg-slate-800 px-1.5 py-0.5 rounded shadow-inner" onclick="event.stopPropagation(); this.innerText = this.innerText === \'****\' ? \''+(stu.pin || '미설정')+'\' : \'****\';"' : 'class="text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded shadow-inner"'}>****</span></span></td>
                     <td class="px-3 py-2 sm:py-3 whitespace-nowrap flex items-center">${avatarHtml}<span class="text-[10px] sm:text-xs text-slate-400 ml-1">Lv.${exactLv} ${lvData.info.name}</span></td>
-                    <td class="px-3 py-2 sm:py-3 text-sb-blue font-bold whitespace-nowrap cursor-pointer hover:bg-slate-700 rounded transition" onclick="window.editStudentStat('${stu.id}', 'xp', '${STUDENT_NAMES[i]}', ${stu.xp || 0})" title="클릭하여 수정">${(stu.xp||0).toLocaleString()} <i class="fa-solid fa-pen text-[10px] ml-1 text-slate-500"></i></td>
-                    <td class="px-3 py-2 sm:py-3 text-sb-gold font-bold whitespace-nowrap cursor-pointer hover:bg-slate-700 rounded transition" onclick="window.editStudentStat('${stu.id}', 'bong', '${STUDENT_NAMES[i]}', ${stu.bong || 0})" title="클릭하여 수정">${(stu.bong||0).toFixed(1)} B <i class="fa-solid fa-pen text-[10px] ml-1 text-slate-500"></i></td>
+                    <td ${clickXP}>${(stu.xp||0).toLocaleString()} ${editPen}</td>
+                    <td ${clickBong}>${(stu.bong||0).toFixed(1)} B ${editPen}</td>
                     <td class="px-3 py-2 sm:py-3 flex gap-1 sm:gap-2 text-sm sm:text-lg items-center h-full">${jobsHtml || '<span class="text-[10px] sm:text-xs text-slate-500">없음</span>'}</td>
-                    <td class="px-3 py-2 sm:py-3 whitespace-nowrap border-l border-slate-700/50 w-32"><div class="flex flex-col gap-1 w-full"><div class="flex gap-1 w-full"><button onclick="window.quickReward('xp', 5, '${stu.id}', this)" class="flex-1 bg-sb-blue/20 hover:bg-sb-blue text-sb-blue hover:text-white border border-sb-blue/50 px-2 py-1.5 rounded text-[10px] sm:text-xs font-black transition-all shadow-md">+5 XP</button><button onclick="window.quickReward('xp', -5, '${stu.id}', this)" class="flex-1 bg-slate-700 hover:bg-sb-red text-slate-300 hover:text-white border border-slate-600 hover:border-sb-red px-2 py-1.5 rounded text-[10px] sm:text-xs font-black transition-all shadow-md">-5 XP</button></div><div class="flex gap-1 w-full"><button onclick="window.quickReward('bong', 1, '${stu.id}', this)" class="flex-1 bg-sb-gold/20 hover:bg-sb-gold text-yellow-400 hover:text-slate-900 border border-sb-gold/50 px-2 py-1.5 rounded text-[10px] sm:text-xs font-black transition-all shadow-md">+1 B</button><button onclick="window.quickReward('bong', -1, '${stu.id}', this)" class="flex-1 bg-slate-700 hover:bg-sb-red text-slate-300 hover:text-white border border-slate-600 hover:border-sb-red px-2 py-1.5 rounded text-[10px] sm:text-xs font-black transition-all shadow-md">-1 B</button></div></div></td></tr>`;
+                    <td class="px-3 py-2 sm:py-3 whitespace-nowrap border-l border-slate-700/50 w-32">${quickControls}</td></tr>`;
                 } else {
-                    tbody.innerHTML += `<tr class="border-b border-slate-700 text-slate-500 bg-slate-800/30"><td class="px-3 py-2 sm:py-3 whitespace-nowrap">${i}. ${STUDENT_NAMES[i]}</td><td class="px-3 py-2 sm:py-3">-</td><td class="px-3 py-2 sm:py-3">-</td><td class="px-3 py-2 sm:py-3">-</td><td class="px-3 py-2 sm:py-3">-</td><td class="px-3 py-2 sm:py-3 text-slate-600 text-[10px] sm:text-xs text-center">⚫ 미접속</td></tr>`;
+                    tbody.innerHTML += `<tr class="border-b border-slate-700 text-slate-500 bg-slate-800/30 ${!canEdit ? 'opacity-50' : ''}"><td class="px-3 py-2 sm:py-3 whitespace-nowrap">${i}. ${STUDENT_NAMES[i]}</td><td class="px-3 py-2 sm:py-3">-</td><td class="px-3 py-2 sm:py-3">-</td><td class="px-3 py-2 sm:py-3">-</td><td class="px-3 py-2 sm:py-3">-</td><td class="px-3 py-2 sm:py-3 text-slate-600 text-[10px] sm:text-xs text-center">⚫ 미접속</td></tr>`;
                 }
             }
         };
@@ -833,8 +870,8 @@
             if(!window.playerState.ownedSkins) window.playerState.ownedSkins = {};
             if(!window.playerState.equippedSkins) window.playerState.equippedSkins = {};
 
-            // 1. 대시보드 및 GM 패널 토글 로직
-            if (!window.playerState.isGM) {
+            // 1. 대시보드 및 관리자 패널 토글 로직
+            if (!window.playerState.isAdmin) {
                 document.getElementById('myDashboardSection').classList.remove('hidden');
                 document.getElementById('adminDashboard').classList.add('hidden');
                 
@@ -877,6 +914,18 @@
             } else {
                 document.getElementById('myDashboardSection').classList.add('hidden');
                 document.getElementById('adminDashboard').classList.remove('hidden');
+                
+                // 마스터 A인 경우 일괄 관리 패널 숨기기
+                const gmOnlyPanels = document.getElementById('gmOnlyPanels');
+                if(gmOnlyPanels) {
+                    gmOnlyPanels.style.display = window.playerState.isGM ? 'block' : 'none';
+                }
+                const subtitle = document.getElementById('adminSubtitle');
+                if(subtitle) {
+                    subtitle.innerText = window.playerState.isGM 
+                        ? '13명 플레이어의 실시간 데이터 및 일괄/개별 편집 패널입니다.' 
+                        : '마스터 A 권한: 석서영(13번) 학생의 데이터만 편집 가능합니다.';
+                }
             }
 
             // 2. 퀘스트 보드 업데이트
@@ -905,7 +954,7 @@
                         stateClass = "border-slate-700 locked cursor-pointer"; clickAction = `window.promptUnlock('${q.id}')`;
                     } else if (q.type === 'locked' && isUnlocked) {
                         stateClass = "border-emerald-500 hover:border-emerald-400 cursor-pointer"; iconHtml = `<i class="fa-solid fa-unlock text-emerald-400 mr-2"></i>`;
-                    } else if (isWeekly && today !== 5 && !window.playerState.isGM) {
+                    } else if (isWeekly && today !== 5 && !window.playerState.isAdmin) {
                         stateClass = "border-slate-700 locked cursor-not-allowed"; titleColor = "text-slate-500"; titleAddon = " (금요일 오픈)"; clickAction = `window.customAlert('이 퀘스트는 매주 금요일에만 수행할 수 있습니다!')`;
                     }
 
@@ -927,7 +976,7 @@
                         status.innerHTML = isEquipped ? '<span class="text-[10px] sm:text-xs bg-pink-500 text-white px-2 py-1 rounded-full font-bold shadow-md">장착 중</span>' : '<span class="text-[10px] sm:text-xs border border-pink-500 text-pink-400 bg-pink-900/20 px-2 py-1 rounded-full font-bold">보유 중</span>';
                     } else {
                         item.classList.remove('border-pink-500');
-                        if (window.playerState.bong >= skin.price || window.playerState.isGM) { item.classList.replace('unaffordable', 'affordable'); } else { item.classList.replace('affordable', 'unaffordable'); }
+                        if (window.playerState.bong >= skin.price || window.playerState.isAdmin) { item.classList.replace('unaffordable', 'affordable'); } else { item.classList.replace('affordable', 'unaffordable'); }
                         status.innerHTML = `<div class="font-display text-base sm:text-lg text-pink-400 bg-slate-900 px-2 py-1 rounded-lg border border-slate-700">${skin.price} B</div>`;
                     }
                 }
@@ -936,18 +985,18 @@
             SHOP_DATA.forEach(shop => {
                 const item = document.getElementById(`shop-btn-${shop.id}`);
                 if (item) {
-                    if (window.playerState.bong >= shop.price || window.playerState.isGM) { item.classList.replace('unaffordable', 'affordable'); } else { item.classList.replace('affordable', 'unaffordable'); }
+                    if (window.playerState.bong >= shop.price || window.playerState.isAdmin) { item.classList.replace('unaffordable', 'affordable'); } else { item.classList.replace('affordable', 'unaffordable'); }
                 }
             });
         }
 
         // ==========================================
-        // 5. 로그인 및 유저 액션 로직 (v5.3 + 모바일 대응)
+        // 5. 로그인 및 유저 액션 로직
         // ==========================================
         document.getElementById('btnLogin').onclick = () => attemptLogin(document.getElementById('loginId').value, document.getElementById('loginPin').value, false);
 
         window.loginAsGuest = function() {
-            window.playerState = { xp: 8500, bong: 120.0, quests: {}, unlockedQuests: {}, jobs: [{name: '게스트', icon: 'fa-eye', color: 'text-slate-400'}], ownedSkins: {}, equippedSkins: {}, hasShield: false, shieldHP: 100, isGuest: true, isGM: false };
+            window.playerState = { xp: 8500, bong: 120.0, quests: {}, unlockedQuests: {}, jobs: [{name: '게스트', icon: 'fa-eye', color: 'text-slate-400'}], ownedSkins: {}, equippedSkins: {}, hasShield: false, shieldHP: 100, isGuest: true, isGM: false, isGMA: false, isAdmin: false };
             completeLoginUI(STUDENT_NAMES["guest"], false);
         };
 
@@ -959,9 +1008,11 @@
         async function attemptLogin(studentId, pin, isAutoLogin) {
             if (!db || !auth.currentUser) return;
             const isGM = (studentId === 'gm');
+            const isGMA = (studentId === 'gm_a');
+            const isAdmin = isGM || isGMA;
+            
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + studentId);
             try {
-                // ★ [수정 2] 로그인 시 데이터를 1회 가져와서 처리 (불필요한 중복 onSnapshot 리스너 삭제)
                 const docSnap = await getDoc(docRef);
                 let data = docSnap.exists() ? docSnap.data() : null;
 
@@ -984,8 +1035,7 @@
                     await setDoc(docRef, data);
                 }
 
-                // ★ [수정 3] 일일 퀘스트 자동 초기화 (매일 아침 8시 기준) - 로그인 시 1회만 판별하여 불필요한 업데이트 방지
-                if (!isGM) {
+                if (!isAdmin) {
                     const now = new Date();
                     const gameTime = new Date(now.getTime() - 8 * 60 * 60 * 1000); // 8시간을 빼서 아침 8시 전에는 어제로 인식하게 함
                     const yyyy = gameTime.getFullYear();
@@ -1009,18 +1059,16 @@
                     }
                 }
 
-                window.playerState = { ...data, isGuest: false, isGM: isGM };
+                window.playerState = { ...data, isGuest: false, isGM, isGMA, isAdmin };
                 localStorage.setItem('sambong_student_id', studentId); 
                 localStorage.setItem('sambong_student_pin', pin);
                 currentStudentDocRef = docRef;
-                completeLoginUI(STUDENT_NAMES[studentId], isGM);
+                completeLoginUI(STUDENT_NAMES[studentId], isAdmin);
                 
-                // 기존에 있던 onSnapshot(currentStudentDocRef) 중복 코드는 할당량 절약을 위해 삭제되었습니다.
-
             } catch (e) { await window.customAlert("에러: " + e.message); }
         }
 
-        function completeLoginUI(nameLabel, isGM) {
+        function completeLoginUI(nameLabel, isAdmin) {
             document.getElementById('loginOverlay').style.opacity = '0';
             setTimeout(() => document.getElementById('loginOverlay').classList.add('hidden'), 500);
             document.getElementById('saveStatus').classList.remove('hidden'); document.getElementById('saveStatus').classList.add('flex');
@@ -1035,7 +1083,7 @@
 
         async function saveDataToCloud() {
             if (window.playerState.isGuest || !currentStudentDocRef) return;
-            const dataToSave = { ...window.playerState }; delete dataToSave.isGuest; delete dataToSave.isGM;
+            const dataToSave = { ...window.playerState }; delete dataToSave.isGuest; delete dataToSave.isGM; delete dataToSave.isGMA; delete dataToSave.isAdmin;
             await setDoc(currentStudentDocRef, dataToSave, { merge: true }); 
         }
 
@@ -1090,7 +1138,7 @@
         window.buyItem = async function(id, name, price, isConsumable) {
             if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드입니다.");
             if (isConsumable) {
-                if (window.playerState.bong >= price || window.playerState.isGM) {
+                if (window.playerState.bong >= price || window.playerState.isAdmin) {
                     let confirmMsg = `[${name}]을(를) ${price}B에 구매하시겠습니까?`;
                     if (id === 'item_shield') {
                         const currentHP = (window.playerState.shieldHP || 0) + (window.playerState.hasShield ? 100 : 0);
@@ -1099,7 +1147,7 @@
                     
                     const ok = await window.customConfirm(confirmMsg);
                     if(ok) {
-                        if(!window.playerState.isGM) window.playerState.bong -= price;
+                        if(!window.playerState.isAdmin) window.playerState.bong -= price;
                         
                         if (id === 'item_shield') {
                             const currentHP = (window.playerState.shieldHP || 0) + (window.playerState.hasShield ? 100 : 0);
@@ -1131,8 +1179,8 @@
                     }
                 } else { await window.customAlert(`❌ [골드 부족] ${price - window.playerState.bong}B가 더 필요합니다.`); }
             } else {
-                const msg = window.playerState.bong >= price || window.playerState.isGM
-                    ? `🎉 [구매 가능] '${name}'을(를) 구매할 수 있습니다!\n(마스터 J 선생님에게 직접 신청하세요)`
+                const msg = window.playerState.bong >= price || window.playerState.isAdmin
+                    ? `🎉 [구매 가능] '${name}'을(를) 구매할 수 있습니다!\n(선생님에게 직접 신청하세요)`
                     : `❌ [골드 부족] '${name}'을 구매하려면 ${(price - window.playerState.bong).toFixed(1)}B가 더 필요합니다.`;
                 await window.customAlert(msg);
             }
@@ -1151,10 +1199,10 @@
                 window.playerState.equippedSkins[skinId] = !window.playerState.equippedSkins[skinId];
                 updateUI(); saveDataToCloud(); window.location.hash = '#plaza';
             } else {
-                if (window.playerState.bong >= skin.price || window.playerState.isGM) {
+                if (window.playerState.bong >= skin.price || window.playerState.isAdmin) {
                     const isOk = await window.customConfirm(`'${skin.name}'을(를) ${skin.price} B에 구매하시겠습니까?`);
                     if (isOk) {
-                        if (!window.playerState.isGM) window.playerState.bong -= skin.price;
+                        if (!window.playerState.isAdmin) window.playerState.bong -= skin.price;
                         window.playerState.ownedSkins[skinId] = true;
                         
                         if (skin.type === 'aura') SKIN_DATA.forEach(s => { if(s.type === 'aura') window.playerState.equippedSkins[s.id] = false; });
@@ -1184,12 +1232,15 @@
         // 6. 마스터 전용 완벽 복구 함수들 (v5.3)
         // ==========================================
         window.plazaClickXP = async function(stuId, element) {
-            if (!window.playerState.isGM || stuId === 'gm') return;
+            if (!window.playerState.isAdmin || stuId === 'gm' || stuId === 'gm_a') return;
+            if (window.playerState.isGMA && stuId !== '13') return;
             window.quickReward('xp', 2, stuId, element);
         };
 
         window.quickReward = async function(type, amount, stuId, btnElement) {
-            if (!window.playerState.isGM) return;
+            if (!window.playerState.isAdmin) return;
+            if (window.playerState.isGMA && stuId !== '13') return window.customAlert('마스터 A는 석서영(13번) 학생의 데이터만 수정할 수 있습니다.');
+
             const rect = btnElement.getBoundingClientRect();
             const floater = document.createElement('div');
             const colorClass = amount > 0 ? (type === 'xp' ? 'text-sb-blue' : 'text-yellow-400') : 'text-sb-red';
@@ -1228,15 +1279,15 @@
             await setDoc(docRef, updates, { merge: true });
         };
 
-        // ★ [수정 4] 학생 13명 전체를 업데이트할 때 개별 쓰기 대신 writeBatch(일괄 쓰기)를 사용하여 1회의 트래픽만 발생하도록 수정했습니다.
         window.bulkAdd = async function(type, amount) {
+            if (!window.playerState.isGM) return window.customAlert('이 기능은 마스터 J만 사용할 수 있습니다.');
             const typeName = type === 'xp' ? '경험치(XP)' : '자산(B)';
             const ok = await window.customConfirm(`모든 학생에게 [${typeName}]를 ${amount}만큼 일괄 지급하시겠습니까?`);
             if(!ok) return;
             
             const batch = writeBatch(db);
             for (const stu of window.allStudentsData) {
-                if (stu.id === 'gm') continue;
+                if (stu.id === 'gm' || stu.id === 'gm_a') continue;
                 let docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + stu.id);
                 let updates = {}; updates[type] = (stu[type] || 0) + amount;
                 batch.set(docRef, updates, { merge: true });
@@ -1246,6 +1297,7 @@
         };
 
         window.bulkDeduct = async function(type, amount) {
+            if (!window.playerState.isGM) return window.customAlert('이 기능은 마스터 J만 사용할 수 있습니다.');
             const typeName = type === 'xp' ? '경험치(XP)' : '자산(B)';
             const ok = await window.customConfirm(`정말 모든 학생의 [${typeName}]를 ${amount}만큼 차감하시겠습니까?\n⚠️ 방패(내구도)를 보유한 학생은 내구도가 우선 차감됩니다.`);
             if(!ok) return;
@@ -1254,7 +1306,7 @@
             const batch = writeBatch(db);
 
             for (const stu of window.allStudentsData) {
-                if (stu.id === 'gm') continue;
+                if (stu.id === 'gm' || stu.id === 'gm_a') continue;
                 let docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + stu.id);
                 let updates = {};
                 let currentShieldHP = (stu.shieldHP || 0) + (stu.hasShield ? 100 : 0);
@@ -1274,7 +1326,9 @@
         };
 
         window.editStudentStat = async function(stuId, type, stuName, currentVal) {
-            if (!window.playerState.isGM) return;
+            if (!window.playerState.isAdmin) return;
+            if (window.playerState.isGMA && stuId !== '13') return window.customAlert('마스터 A는 석서영(13번) 학생의 데이터만 수정할 수 있습니다.');
+            
             const typeName = type === 'xp' ? '경험치(XP)' : '자산(B)';
             const input = await window.customPrompt(`[${stuName}] 학생의 새로운 ${typeName}를 직접 입력하세요.\n(현재 값: ${currentVal})`, "number");
             if (input !== null) {
@@ -1288,14 +1342,14 @@
         };
 
         window.resetRaids = async function() {
-            if (!window.playerState.isGM) return;
+            if (!window.playerState.isGM) return window.customAlert('이 기능은 마스터 J만 사용할 수 있습니다.');
             const ok = await window.customConfirm("⚠️ 모든 학생의 '전담 레이드(특수 퀘스트)' 완료 및 잠금 해제 상태를 초기화하시겠습니까?\n(일주일에 2회 이상 전담 수업이 있을 경우 다시 보상을 받도록 해줍니다.)");
             if(!ok) return;
             const raidIds = ['q_sci', 'q_prac', 'q_eng', 'q_dan', 'q_the'];
             const batch = writeBatch(db);
 
             for (const stu of window.allStudentsData) {
-                if (stu.id === 'gm') continue;
+                if (stu.id === 'gm' || stu.id === 'gm_a') continue;
                 let docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + stu.id);
                 let updates = { quests: { ...(stu.quests || {}) }, unlockedQuests: { ...(stu.unlockedQuests || {}) } };
                 let modified = false;
@@ -1310,7 +1364,9 @@
         };
 
         window.changeStudentPin = async function(stuId, stuName) {
-            if (!window.playerState.isGM) return;
+            if (!window.playerState.isAdmin) return;
+            if (window.playerState.isGMA && stuId !== '13') return window.customAlert('마스터 A는 석서영(13번) 학생의 데이터만 수정할 수 있습니다.');
+
             const newPin = await window.customPrompt(`[${stuName}] 학생의 새로운 4자리 비밀번호(PIN)를 입력하세요:`, "number");
             if (newPin && newPin.length === 4) {
                 let docRef = doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + stuId);
@@ -1320,7 +1376,7 @@
         };
 
         window.setRaidPassword = async function() {
-            if (!window.playerState.isGM) return;
+            if (!window.playerState.isGM) return window.customAlert('이 기능은 마스터 J만 사용할 수 있습니다.');
             const newPw = await window.customPrompt("학생들에게 알려줄 새로운 레이드 비밀번호를 입력하세요:", "text");
             if (newPw) {
                 const settingsRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global');
