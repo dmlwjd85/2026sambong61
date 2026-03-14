@@ -193,13 +193,17 @@
         </div>
     </nav>
 
-    <!-- ★ 레이드 전투 모달 (전체 화면) ★ -->
+    <!-- ★ 레이드 전투 모달 (전체 화면) V2 ★ -->
     <div id="raidBattleModal" class="hidden fixed inset-0 z-[200] bg-slate-900 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIvPjwvc3ZnPg==')] flex flex-col transition-all duration-300">
+        
+        <!-- 도망치기 버튼 -->
+        <button id="btnGiveUpRaid" onclick="window.giveUpRaid()" class="absolute top-4 left-4 bg-slate-800/80 hover:bg-sb-red text-white border border-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold transition z-50 shadow-lg flex items-center gap-1"><i class="fa-solid fa-person-running"></i> 도망치기</button>
+        
         <!-- 상단: 보스 구역 -->
         <div class="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden" id="raidBossArea">
             <div class="absolute inset-0 bg-gradient-to-b from-red-900/20 to-transparent pointer-events-none" id="berserkEffect"></div>
             
-            <h2 class="text-2xl sm:text-4xl font-display text-white mb-2 z-10 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)] flex items-center gap-2"><i class="fa-solid fa-skull"></i> 어둠의 중간고사 보스</h2>
+            <h2 class="text-2xl sm:text-4xl font-display text-white mb-2 z-10 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)] flex items-center gap-2 mt-8 sm:mt-0"><i class="fa-solid fa-skull"></i> 어둠의 중간고사 보스</h2>
             
             <!-- 보스 HP 바 -->
             <div class="w-full max-w-lg bg-slate-800 rounded-full h-6 sm:h-8 border-2 border-slate-600 relative z-10 mb-6 shadow-2xl overflow-hidden">
@@ -207,21 +211,31 @@
                 <div class="absolute inset-0 flex items-center justify-center text-white font-black text-sm sm:text-base drop-shadow-md" id="raidBossHPText">1000 / 1000</div>
             </div>
 
-            <!-- 보스 이미지 (이모지) -->
-            <div id="raidBossImage" class="text-8xl sm:text-[150px] drop-shadow-[0_0_30px_rgba(239,68,68,0.5)] z-10 transition-transform duration-200">👹</div>
+            <!-- 보스 이미지 (이모지) -> 점점 다가옴 -->
+            <div id="raidBossImage" class="text-8xl sm:text-[150px] drop-shadow-[0_0_30px_rgba(239,68,68,0.5)] z-10 transition-transform duration-[100ms] ease-linear">👹</div>
             <div id="raidComboText" class="absolute right-10 top-1/2 -translate-y-1/2 font-display text-4xl sm:text-6xl text-sb-gold drop-shadow-lg opacity-0 transition-opacity">2 COMBO!</div>
         </div>
 
-        <!-- 중단: 문제 및 입력 구역 -->
-        <div class="h-auto bg-slate-800 border-y-4 border-sb-blue p-4 sm:p-6 shadow-[0_0_30px_rgba(59,130,246,0.2)] z-20 flex flex-col justify-center items-center" id="raidInputArea">
-            <div class="text-sb-blue font-bold text-sm sm:text-base mb-2" id="raidTurnText">대기 중...</div>
+        <!-- 중단: 문제 및 입력 구역 (객관식) -->
+        <div class="h-auto bg-slate-800 border-y-4 border-sb-blue p-4 sm:p-6 shadow-[0_0_30px_rgba(59,130,246,0.2)] z-20 flex flex-col justify-center items-center relative" id="raidInputArea">
+            
+            <!-- 30초 타이머 바 -->
+            <div id="raidTimerBarContainer" class="absolute top-0 left-0 w-full h-1.5 sm:h-2 bg-slate-900 overflow-hidden hidden">
+                <div id="raidTimerBar" class="bg-sb-gold h-full w-full transition-all duration-[100ms] ease-linear"></div>
+            </div>
+
+            <div class="text-sb-blue font-bold text-sm sm:text-base mb-1 mt-2" id="raidTurnText">대기 중...</div>
             <div class="text-lg sm:text-2xl text-white font-bold text-center break-keep max-w-2xl mb-4" id="raidQuestionText">레이드 시작을 기다리고 있습니다.</div>
             
-            <div class="flex gap-2 w-full max-w-md" id="raidInputGroup">
-                <input type="text" id="raidAnswerInput" placeholder="정답을 입력하세요" class="flex-1 bg-slate-900 border-2 border-slate-600 text-white px-4 py-3 rounded-xl font-bold focus:border-sb-blue focus:outline-none disabled:opacity-50 transition" disabled>
-                <button id="btnSubmitAnswer" class="bg-sb-blue hover:bg-blue-500 text-white font-bold px-6 py-3 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg" disabled>공격!</button>
+            <!-- 객관식 버튼 4개 -->
+            <div id="raidMultipleChoiceGroup" class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 w-full max-w-2xl hidden mb-2">
+                <button onclick="window.submitRaidAnswer(0)" id="raidOption_0" class="bg-slate-700 hover:bg-slate-600 border border-slate-500 text-white rounded-xl py-3 px-4 font-bold transition break-keep text-sm sm:text-base shadow-md">보기 1</button>
+                <button onclick="window.submitRaidAnswer(1)" id="raidOption_1" class="bg-slate-700 hover:bg-slate-600 border border-slate-500 text-white rounded-xl py-3 px-4 font-bold transition break-keep text-sm sm:text-base shadow-md">보기 2</button>
+                <button onclick="window.submitRaidAnswer(2)" id="raidOption_2" class="bg-slate-700 hover:bg-slate-600 border border-slate-500 text-white rounded-xl py-3 px-4 font-bold transition break-keep text-sm sm:text-base shadow-md">보기 3</button>
+                <button onclick="window.submitRaidAnswer(3)" id="raidOption_3" class="bg-slate-700 hover:bg-slate-600 border border-slate-500 text-white rounded-xl py-3 px-4 font-bold transition break-keep text-sm sm:text-base shadow-md">보기 4</button>
             </div>
-            <div class="text-[10px] sm:text-xs text-slate-400 mt-2"><span class="text-sb-gold">5초 이내 정답 = 크리티컬(x2)</span> | 10초 이내 = 그레이트 | 오답/초과 = 보스 회복(5%)</div>
+            
+            <div class="text-[10px] sm:text-xs text-slate-400 mt-2" id="raidRuleDesc"><span class="text-sb-gold">10초 이내 정답 = 크리티컬(x2)</span> | 20초 이내 = 그레이트 | 오답/초과 = 보스 체력 회복</div>
         </div>
 
         <!-- 하단: 참가자 목록 및 전투 로그 -->
@@ -239,7 +253,7 @@
         </div>
         
         <!-- 나가기 버튼 (레이드 종료 시 활성화) -->
-        <button id="btnExitRaid" onclick="window.closeRaidModal()" class="hidden absolute top-4 right-4 bg-slate-800/80 hover:bg-sb-red text-white border border-slate-600 px-4 py-2 rounded-lg font-bold transition z-50">레이드 종료 후 복귀</button>
+        <button id="btnExitRaid" onclick="window.closeRaidModal()" class="hidden absolute top-4 right-4 bg-slate-800/80 hover:bg-sb-red text-white border border-slate-600 px-4 py-2 rounded-lg font-bold transition z-50 shadow-lg">레이드 종료 후 복귀</button>
     </div>
 
     <!-- 메인 콘텐츠 영역 -->
@@ -371,17 +385,17 @@
                 </div>
             </div>
 
-            <!-- ★ 주말 레이드 퀘스트 출제 패널 (마스터 전용) ★ -->
+            <!-- ★ 주말 레이드 객관식 퀘스트 출제 패널 (마스터 전용) ★ -->
             <div class="glass-panel p-4 sm:p-6 rounded-2xl mb-6 border border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.15)] bg-slate-900/80">
                 <div class="flex justify-between items-end mb-4 border-b border-slate-700 pb-2">
-                    <h3 class="text-white font-bold flex items-center text-lg"><i class="fa-solid fa-skull-crossbones text-purple-400 mr-2"></i> 주말 협동 레이드 세팅 (마스터)</h3>
+                    <h3 class="text-white font-bold flex items-center text-lg"><i class="fa-solid fa-skull-crossbones text-purple-400 mr-2"></i> 주말 협동 레이드 세팅 (객관식)</h3>
                     <span id="raidAdminStatus" class="text-xs font-bold bg-slate-800 px-2 py-1 rounded border border-slate-600">상태: 대기중</span>
                 </div>
                 
-                <p class="text-xs text-slate-400 mb-4">5개의 문제와 정답을 입력하고 레이드 로비를 오픈하세요. (1~5번 순서대로 학생이 풀게 됩니다.)</p>
+                <p class="text-xs text-slate-400 mb-4">5개의 문제와 4개의 보기를 입력하고 <span class="text-sb-gold font-bold">정답인 보기 앞의 동그라미를 체크</span>한 후 임시저장하세요.</p>
                 
-                <div class="space-y-3 mb-6" id="raidQuestionInputs">
-                    <!-- JS로 5개 인풋 생성 -->
+                <div class="space-y-4 mb-6" id="raidQuestionInputs">
+                    <!-- JS로 5개 객관식 인풋 생성 -->
                 </div>
 
                 <div class="flex gap-3">
@@ -524,7 +538,7 @@
                             <div class="bg-slate-900/80 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4">
                                 <div class="flex-1">
                                     <h3 class="text-lg font-bold text-purple-400 mb-1"><i class="fa-solid fa-skull-crossbones mr-2"></i> 주말 협동 레이드 (5인)</h3>
-                                    <p class="text-xs text-slate-400 break-keep">금요일 저녁~일요일 주말에만 열립니다! 5명이 모여 보스를 무찌르고 엄청난 보상을 획득하세요. (빠른 정답 = 크리티컬 대미지!)</p>
+                                    <p class="text-xs text-slate-400 break-keep">금요일 저녁~일요일 주말에만 열립니다! 5명이 모여 30초 안에 객관식 보스의 약점을 찌르고 엄청난 보상을 획득하세요.</p>
                                     <div class="text-[10px] text-yellow-500 mt-2 font-bold" id="raidTimeStatusText">현재 시간 동기화 중...</div>
                                 </div>
                                 <div class="text-center w-full sm:w-auto shrink-0">
@@ -686,6 +700,7 @@
 
         // ★ 레이드 전용 전역 변수 ★
         window.currentRaidState = { status: 'waiting', participants: [], bossHP: 1000, maxBossHP: 1000, currentTurn: 0, startTime: 0, combo: 0, logs: [], questions: [] };
+        window.raidTimerInterval = null;
         let isWeekend = false;
         const BASE_BOSS_HP = 500;
         const RAID_REWARD = { xp: 500, bong: 20.0 };
@@ -716,7 +731,7 @@
         });
 
         // ==========================================
-        // ★ 레이드 (Raid) 로직 구현부 ★
+        // ★ 레이드 (Raid) 로직 V2 구현부 ★
         // ==========================================
         window.updateRaidEntryUI = function() {
             const btn = document.getElementById('btnJoinRaid');
@@ -750,7 +765,7 @@
                 }
             } else if(state === 'playing') {
                 countDiv.classList.add('hidden');
-                if(participants.includes(localStorage.getItem('sambong_student_id'))) {
+                if(participants.includes(localStorage.getItem('sambong_student_id')) || window.playerState.isAdmin) {
                     btn.innerText = "⚔️ 전투 참여중!";
                     btn.disabled = false;
                     btn.className = "w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-xl border border-red-500 transition shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse";
@@ -796,65 +811,152 @@
             // Turn info & Inputs
             const turnText = document.getElementById('raidTurnText');
             const qText = document.getElementById('raidQuestionText');
-            const ansInput = document.getElementById('raidAnswerInput');
-            const submitBtn = document.getElementById('btnSubmitAnswer');
+            const multipleChoiceGrp = document.getElementById('raidMultipleChoiceGroup');
+            const timerBarGrp = document.getElementById('raidTimerBarContainer');
+            const exitBtn = document.getElementById('btnExitRaid');
+            const giveUpBtn = document.getElementById('btnGiveUpRaid');
             const myId = localStorage.getItem('sambong_student_id');
+
+            // Timer Initialization
+            clearInterval(window.raidTimerInterval);
 
             if(state.status === 'playing') {
                 document.getElementById('raidBattleModal').classList.remove('hidden');
+                exitBtn.classList.add('hidden');
+                
+                // 마스터가 관전 중이면 도망치기 버튼 숨김
+                if(window.playerState.isAdmin) giveUpBtn.classList.add('hidden');
+                else giveUpBtn.classList.remove('hidden');
+
                 const cTurn = state.currentTurn;
                 const cPlayer = state.participants[cTurn];
+                const currentQuestion = state.questions[cTurn];
                 
-                if(cTurn < state.questions.length) {
-                    qText.innerText = `Q${cTurn+1}. ${state.questions[cTurn].q}`;
+                if(cTurn < state.questions.length && currentQuestion) {
+                    qText.innerText = `Q${cTurn+1}. ${currentQuestion.q}`;
+                    
+                    // Render Options
+                    if (currentQuestion.options && currentQuestion.options.length === 4) {
+                        multipleChoiceGrp.classList.remove('hidden');
+                        for(let i=0; i<4; i++) {
+                            const btn = document.getElementById(`raidOption_${i}`);
+                            btn.innerText = currentQuestion.options[i];
+                            
+                            if (cPlayer === myId) {
+                                btn.disabled = false;
+                                btn.className = "bg-slate-700 hover:bg-slate-500 border border-slate-400 hover:border-sb-gold text-white rounded-xl py-3 px-4 font-bold transition break-keep text-sm sm:text-base shadow-lg transform hover:scale-105 active:scale-95";
+                            } else {
+                                btn.disabled = true;
+                                btn.className = "bg-slate-800 border border-slate-700 text-slate-500 rounded-xl py-3 px-4 font-bold break-keep text-sm sm:text-base opacity-50 cursor-not-allowed";
+                            }
+                        }
+                    } else {
+                        // 만약 구버전 데이터(주관식)가 남아있다면 에러 방지
+                        qText.innerHTML = `<span class="text-sb-red">⚠️ 시스템 오류: 문제가 객관식이 아닙니다. 마스터가 문제를 다시 저장해야 합니다.</span>`;
+                        multipleChoiceGrp.classList.add('hidden');
+                    }
                 }
 
                 if(cPlayer === myId) {
-                    turnText.innerText = "⚔️ 나의 턴입니다! 빠르게 정답을 입력하세요!";
+                    turnText.innerText = "⚔️ 나의 턴입니다! 빠르게 정답을 고르세요! (30초 제한)";
                     turnText.className = "text-emerald-400 font-bold text-sm sm:text-base mb-2 animate-pulse";
-                    ansInput.disabled = false;
-                    submitBtn.disabled = false;
-                    ansInput.focus();
+                    timerBarGrp.classList.remove('hidden');
                 } else {
-                    turnText.innerText = `⏳ [${STUDENT_NAMES[cPlayer]}] 용사의 턴 대기중...`;
+                    turnText.innerText = `⏳ [${STUDENT_NAMES[cPlayer]}] 용사의 턴 (30초 제한)`;
                     turnText.className = "text-sb-gold font-bold text-sm sm:text-base mb-2";
-                    ansInput.disabled = true;
-                    submitBtn.disabled = true;
-                    ansInput.value = '';
+                    timerBarGrp.classList.remove('hidden');
                 }
-            } else if (state.status === 'finished') {
-                qText.innerHTML = `<span class="text-yellow-400">🎉 보스를 처치했습니다! 🎉<br>모든 참가자에게 ${RAID_REWARD.xp}XP, ${RAID_REWARD.bong}B 지급 완료!</span>`;
-                turnText.innerText = "전투 종료";
-                ansInput.disabled = true;
-                submitBtn.disabled = true;
-                document.getElementById('btnExitRaid').classList.remove('hidden');
-                document.getElementById('raidBossImage').innerText = '👼';
-            } else if (state.status === 'failed') {
-                qText.innerHTML = `<span class="text-red-400">💀 용사들이 전멸했습니다... (보스 회복 완료)</span>`;
-                turnText.innerText = "전투 실패";
-                ansInput.disabled = true;
-                submitBtn.disabled = true;
-                document.getElementById('btnExitRaid').classList.remove('hidden');
+
+                // 타이머 루프 및 보스 스케일링 효과
+                window.raidTimerInterval = setInterval(() => {
+                    const timeTaken = (Date.now() - state.startTime) / 1000;
+                    let remaining = Math.max(0, 30 - timeTaken);
+                    
+                    // 보스가 점점 다가오는 효과 (1배율에서 최대 2.5배율까지 30초동안 커짐)
+                    const bossImg = document.getElementById('raidBossImage');
+                    if (bossImg && state.status === 'playing') {
+                        const scale = 1 + (timeTaken / 30) * 1.5; 
+                        bossImg.style.transform = `scale(${scale})`;
+                    }
+
+                    // 타이머 바 UI 업데이트 (나뿐만 아니라 모두의 화면에 진행상황 공유)
+                    const bar = document.getElementById('raidTimerBar');
+                    if(bar) {
+                        bar.style.width = `${(remaining / 30) * 100}%`;
+                        if(remaining <= 10) bar.classList.replace('bg-sb-gold', 'bg-sb-red');
+                        else bar.classList.replace('bg-sb-red', 'bg-sb-gold');
+                    }
+                    
+                    // 시간 초과 처리 (본인의 턴일 때만 서버로 전송)
+                    if (remaining <= 0 && cPlayer === myId) {
+                        clearInterval(window.raidTimerInterval);
+                        window.submitRaidAnswer(-1); // -1: 타임아웃
+                    }
+                }, 100);
+
+            } else {
+                multipleChoiceGrp.classList.add('hidden');
+                timerBarGrp.classList.add('hidden');
+                giveUpBtn.classList.add('hidden');
+                document.getElementById('raidBossImage').style.transform = 'scale(1)'; // 보스 크기 원상복구
+
+                if (state.status === 'finished') {
+                    qText.innerHTML = `<span class="text-yellow-400">🎉 보스를 처치했습니다! 🎉<br>모든 참가자에게 ${RAID_REWARD.xp}XP, ${RAID_REWARD.bong}B 지급 완료!</span>`;
+                    turnText.innerText = "전투 종료";
+                    exitBtn.classList.remove('hidden');
+                    document.getElementById('raidBossImage').innerText = '👼';
+                } else if (state.status === 'failed') {
+                    qText.innerHTML = `<span class="text-red-400">💀 용사들이 전멸하거나 도망쳤습니다... (보스 회복 완료)</span>`;
+                    turnText.innerText = "전투 실패";
+                    exitBtn.classList.remove('hidden');
+                }
             }
         };
+
+        window.giveUpRaid = async function() {
+            const ok = await window.customConfirm("정말 도망치시겠습니까?\n전투 화면에서 이탈합니다. (나의 턴이었다면 기회가 날아갑니다!)");
+            if(ok) {
+                window.closeRaidModal();
+                const state = window.currentRaidState;
+                const myId = localStorage.getItem('sambong_student_id');
+                // 만약 내 턴인데 도망쳤다면 게임 진행이 멈추는 것을 방지하기 위해 오답 처리
+                if (state && state.status === 'playing' && state.participants[state.currentTurn] === myId) {
+                    window.submitRaidAnswer(-2); // -2: 도망침
+                }
+            }
+        }
 
         window.saveRaidQuestions = async function() {
             if(!window.playerState.isAdmin) return;
             const qs = [];
             for(let i=0; i<5; i++) {
-                const q = document.getElementById(`rq_${i}`).value.trim();
-                const a = document.getElementById(`ra_${i}`).value.trim();
-                if(!q || !a) return window.customAlert('5개의 문제와 정답을 모두 입력해주세요!');
-                qs.push({q, a});
+                const qInput = document.getElementById(`rq_${i}`);
+                if (!qInput) continue;
+                const q = qInput.value.trim();
+                
+                const options = [];
+                let answerIndex = -1;
+                for(let j=0; j<4; j++) {
+                    const opText = document.getElementById(`rop_${i}_${j}`).value.trim();
+                    options.push(opText);
+                    const radio = document.querySelector(`input[name="ra_${i}"][value="${j}"]`);
+                    if(radio && radio.checked) answerIndex = j;
+                }
+
+                if(!q || options.some(op => !op) || answerIndex === -1) {
+                    return window.customAlert(`${i+1}번 문제의 내용, 4개의 보기, 그리고 정답 체크를 모두 완료해주세요!`);
+                }
+                qs.push({ q, options, answerIndex });
             }
             await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'raid', 'state'), { questions: qs }, {merge: true});
-            window.customAlert('✅ 레이드 문제가 임시저장되었습니다.');
+            window.customAlert('✅ 객관식 레이드 문제 5개가 임시저장되었습니다.');
         };
 
         window.openRaidLobby = async function() {
             if(!window.playerState.isAdmin) return;
             const qs = window.currentRaidState?.questions || [];
-            if(qs.length < 5) return window.customAlert('문제를 먼저 저장해주세요!');
+            if(qs.length < 5 || !qs[0].options) return window.customAlert('객관식 문제 5개를 먼저 작성하고 임시저장해주세요!');
+            
             await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'raid', 'state'), {
                 status: 'recruiting', participants: [], bossHP: BASE_BOSS_HP, maxBossHP: BASE_BOSS_HP,
                 currentTurn: 0, combo: 0, logs: [`[시스템] 레이드 보스가 출현했습니다! 용사들을 모집합니다.`], questions: qs
@@ -872,6 +974,7 @@
                 document.getElementById('btnExitRaid').classList.add('hidden');
                 document.getElementById('raidBattleModal').classList.add('hidden');
                 document.getElementById('raidBossImage').innerText = '👹';
+                document.getElementById('raidBossImage').style.transform = 'scale(1)';
             }
         };
 
@@ -891,6 +994,7 @@
                 updates.startTime = Date.now();
                 updates.logs = [...(state.logs||[]), `[시스템] 5명의 용사가 모였습니다. 전투를 시작합니다!`];
                 document.getElementById('raidBossImage').innerText = '👹'; // 보스 얼굴 초기화
+                document.getElementById('raidBossImage').style.transform = 'scale(1)';
             }
             
             await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'raid', 'state'), updates, {merge: true});
@@ -901,40 +1005,55 @@
             document.getElementById('btnExitRaid').classList.add('hidden');
         };
 
-        window.submitRaidAnswer = async function() {
+        window.submitRaidAnswer = async function(selectedIndex) {
             const state = window.currentRaidState;
             if(!state || state.status !== 'playing') return;
             const myId = localStorage.getItem('sambong_student_id');
             const cTurn = state.currentTurn;
             if(state.participants[cTurn] !== myId) return;
 
-            const inputAns = document.getElementById('raidAnswerInput').value.trim();
-            if(!inputAns) return;
+            // 버튼 비활성화 (중복 클릭 방지)
+            for(let i=0; i<4; i++) {
+                const btn = document.getElementById(`raidOption_${i}`);
+                if(btn) btn.disabled = true;
+            }
 
-            const correctAns = state.questions[cTurn].a;
+            const correctAnsIndex = state.questions[cTurn].answerIndex;
             const timeTaken = (Date.now() - state.startTime) / 1000;
             
             let damage = 0;
-            let isCrit = false;
             let msg = '';
             let newCombo = state.combo || 0;
             
-            if(inputAns === correctAns) {
-                if(timeTaken <= 5) {
-                    damage = 200; isCrit = true; msg = `💥 크리티컬! (5초 이내)`; newCombo++;
-                } else if(timeTaken <= 10) {
-                    damage = 100; msg = `⚔️ 그레이트! (10초 이내)`; newCombo++;
+            if(selectedIndex === -1) {
+                // 시간 초과
+                damage = -50; msg = `⏳ 시간 초과! 보스가 체력을 50 회복합니다!`; newCombo = 0;
+            } else if (selectedIndex === -2) {
+                // 도망침
+                damage = -50; msg = `🏃 전투 이탈! 보스가 틈을 타 체력을 50 회복합니다!`; newCombo = 0;
+            } else if(selectedIndex === correctAnsIndex) {
+                // 정답
+                if(timeTaken <= 10) {
+                    damage = 250; msg = `💥 크리티컬! (10초 이내 약점 찌르기)`; newCombo++;
+                } else if(timeTaken <= 20) {
+                    damage = 150; msg = `⚔️ 그레이트! (20초 이내 공격)`; newCombo++;
                 } else {
-                    damage = 50; msg = `🔪 굿! (정답)`; newCombo++;
+                    damage = 80; msg = `🔪 굿! (정답 끄덕)`; newCombo++;
                 }
             } else {
-                damage = -50; msg = `❌ 오답! 보스가 체력을 50 회복합니다!`; newCombo = 0;
+                // 오답
+                damage = -50; msg = `❌ 치명적인 빗나감! 보스가 체력을 50 회복합니다!`; newCombo = 0;
+                
+                // 틀렸을 때 화면 흔들림 효과
+                if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                document.getElementById('raidBattleModal').classList.add('shake-screen');
+                setTimeout(()=>document.getElementById('raidBattleModal').classList.remove('shake-screen'), 500);
             }
 
             let newHP = state.bossHP - damage;
             if(newHP > state.maxBossHP) newHP = state.maxBossHP;
             
-            const logMsg = `[${STUDENT_NAMES[myId]}] ${inputAns} 제출! -> ${msg} (대미지: ${damage})`;
+            const logMsg = `[${STUDENT_NAMES[myId]}] -> ${msg} (DMG: ${damage})`;
             const newLogs = [logMsg, ...(state.logs||[])].slice(0, 20);
 
             let newStatus = state.status;
@@ -948,9 +1067,9 @@
             } else if(nextTurn >= 5) {
                 newStatus = 'failed';
                 newLogs.unshift(`[시스템] 모든 용사가 공격했으나 보스를 쓰러뜨리지 못했습니다...`);
+            } else {
+                newLogs.unshift(`▶️ 다음 차례: ${STUDENT_NAMES[state.participants[nextTurn]]} 턴 시작!`);
             }
-
-            document.getElementById('raidAnswerInput').value = '';
 
             await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'raid', 'state'), {
                 bossHP: newHP,
@@ -958,7 +1077,7 @@
                 combo: newCombo,
                 logs: newLogs,
                 status: newStatus,
-                startTime: Date.now()
+                startTime: Date.now() // 다음 턴의 타이머 리셋
             }, {merge: true});
         };
 
@@ -984,7 +1103,7 @@
             '"환영한다, 용사여. 모험의 첫 번째 시즌이 시작되었다. 성실한 출석과 훈련으로 너의 잠재력을 폭발시켜라!"',
             '"💡 힌트: 매일 아침 8시 40분 이전에 등교하여 하단의 투두 리스트에서 [출석의 축복]을 인증해라!"',
             '"💡 힌트: 상점의 [절대 방패] 아이템은 나의 무서운 차감 공격을 1회(최대 100) 막아주는 신비한 물건이지."',
-            '"주말에는 협동 레이드 보스가 출현한다! 친구들 5명을 모아 함께 도전하라!"',
+            '"주말에는 협동 레이드 보스가 출현한다! 30초의 제한시간을 명심해라! 시간이 지날수록 보스가 거대해진다!"',
             '"레벨 100 [전설] 등급에 도달하는 자, 명예의 전당에 영구히 기록될 것이다!"'
         ];
         let dialogIdx = 0;
@@ -1020,7 +1139,7 @@
         }
 
         // ==========================================
-        // ★ 화면 렌더링 (직업, 상점, 퀘스트 등) ★
+        // ★ 화면 렌더링 (직업, 상점, 퀘스트, 관리자 등) ★
         // ==========================================
         function initDynamicContent() {
             // 직업 렌더링
@@ -1070,15 +1189,23 @@
                 `).join('');
             }
 
-            // 관리자 레이드 세팅 UI 렌더링
+            // ★ V2: 관리자 레이드 세팅 객관식 UI 렌더링 ★
             const rq = document.getElementById('raidQuestionInputs');
             if(rq) {
                 let html = '';
                 for(let i=0; i<5; i++) {
-                    html += `<div class="bg-slate-800 p-3 rounded-lg border border-slate-600 flex gap-2">
-                        <span class="text-sb-blue font-bold text-sm w-6 shrink-0 pt-2">Q${i+1}</span>
-                        <input type="text" id="rq_${i}" placeholder="문제를 입력하세요" class="flex-1 bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded text-sm focus:border-sb-blue focus:outline-none">
-                        <input type="text" id="ra_${i}" placeholder="정답" class="w-1/4 bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded text-sm focus:border-sb-gold focus:outline-none">
+                    html += `
+                    <div class="bg-slate-800 p-3 rounded-lg border border-slate-600 flex flex-col gap-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sb-blue font-bold text-sm w-8 shrink-0">Q${i+1}</span>
+                            <input type="text" id="rq_${i}" placeholder="문제를 입력하세요" class="flex-1 bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded text-sm focus:border-sb-blue focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-10">
+                            <div class="flex items-center gap-2"><input type="radio" name="ra_${i}" value="0" checked class="w-4 h-4 text-sb-blue bg-slate-900 border-slate-600 focus:ring-sb-blue"> <input type="text" id="rop_${i}_0" placeholder="보기 1" class="w-full bg-slate-900 border border-slate-700 text-white px-2 py-1.5 rounded text-xs focus:border-sb-gold"></div>
+                            <div class="flex items-center gap-2"><input type="radio" name="ra_${i}" value="1" class="w-4 h-4 text-sb-blue bg-slate-900 border-slate-600 focus:ring-sb-blue"> <input type="text" id="rop_${i}_1" placeholder="보기 2" class="w-full bg-slate-900 border border-slate-700 text-white px-2 py-1.5 rounded text-xs focus:border-sb-gold"></div>
+                            <div class="flex items-center gap-2"><input type="radio" name="ra_${i}" value="2" class="w-4 h-4 text-sb-blue bg-slate-900 border-slate-600 focus:ring-sb-blue"> <input type="text" id="rop_${i}_2" placeholder="보기 3" class="w-full bg-slate-900 border border-slate-700 text-white px-2 py-1.5 rounded text-xs focus:border-sb-gold"></div>
+                            <div class="flex items-center gap-2"><input type="radio" name="ra_${i}" value="3" class="w-4 h-4 text-sb-blue bg-slate-900 border-slate-600 focus:ring-sb-blue"> <input type="text" id="rop_${i}_3" placeholder="보기 4" class="w-full bg-slate-900 border border-slate-700 text-white px-2 py-1.5 rounded text-xs focus:border-sb-gold"></div>
+                        </div>
                     </div>`;
                 }
                 rq.innerHTML = html;
@@ -1090,12 +1217,6 @@
         // ==========================================
         async function initApp() {
             initDynamicContent();
-
-            // 레이드 이벤트 리스너 바인딩
-            const btnSubmit = document.getElementById('btnSubmitAnswer');
-            const inputAns = document.getElementById('raidAnswerInput');
-            if(btnSubmit) btnSubmit.onclick = window.submitRaidAnswer;
-            if(inputAns) inputAns.addEventListener('keypress', (e) => { if(e.key === 'Enter') window.submitRaidAnswer(); });
 
             try {
                 const firebaseConfig = { apiKey: "AIzaSyAsih-sfnIZ_gX_1l7SAVZHCAhk3KzmiP8", authDomain: "sambong-world-2026.firebaseapp.com", projectId: "sambong-world-2026", storageBucket: "sambong-world-2026.firebasestorage.app", messagingSenderId: "728320769100", appId: "1:728320769100:web:7510c9a77cca6b87a788e9" };
@@ -1156,10 +1277,11 @@
                                     setTimeout(()=>bImg.classList.remove('boss-damage'), 300);
                                     if(navigator.vibrate) navigator.vibrate(100);
                                 }
+                                
                                 // 상태이상 디버프 이펙트 (내가 다음 턴인데 앞사람이 틀렸을 때)
                                 const myId = localStorage.getItem('sambong_student_id');
                                 const cTurn = window.currentRaidState.currentTurn;
-                                const pLog = (window.currentRaidState.logs||[])[(window.currentRaidState.logs||[]).length-2];
+                                const pLog = (window.currentRaidState.logs||[])[0]; // 최신 로그
                                 if(window.currentRaidState.status === 'playing' && window.currentRaidState.participants[cTurn] === myId) {
                                     if(pLog && pLog.includes('❌')) {
                                         document.getElementById('raidInputArea').classList.add('debuff-blur', 'debuff-shake');
