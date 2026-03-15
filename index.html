@@ -218,24 +218,38 @@
     <div id="swipeWrapper" class="pt-24 sm:pt-28 pb-20 px-3 sm:px-4 max-w-7xl mx-auto w-full min-h-screen">
 
         <!-- ★ 1. 대시보드 탭 (컨디션, 투두, 드래곤볼) ★ -->
-        <!-- 마스터도 이 화면을 통해 자신의 상태와 기분을 업데이트 합니다. -->
         <section id="dashboardSection" class="space-y-6">
             <div class="flex flex-col md:flex-row gap-4 sm:gap-6">
-                <!-- 아바타 카드 -->
-                <div class="md:w-1/3 glass-panel rounded-3xl p-6 flex flex-col items-center justify-center relative overflow-hidden bg-card-grad shadow-lg border border-slate-600">
-                    <div id="dashJobBadge" class="absolute top-4 left-4 flex gap-1 flex-col z-20"></div>
-                    <div id="dashShield" class="absolute top-4 right-4 text-2xl z-20"></div>
-                    <div id="dashAvatar" class="text-6xl sm:text-7xl mb-4 relative z-10 drop-shadow-xl avatar-bounce mt-4">👦</div>
-                    <h3 id="dashName" class="text-2xl font-display text-white mt-2 z-10 tracking-wider">이름</h3>
-                    <div id="dashLevelName" class="text-xs font-bold text-sb-blue mb-4 z-10 bg-slate-900 px-3 py-1 rounded-full border border-slate-700">Lv.1 새내기</div>
-                    <div class="flex w-full justify-center gap-4 border-t border-slate-700/80 pt-4 z-10">
-                        <div class="text-center w-1/2"><div class="text-[10px] text-slate-400 font-bold mb-1">XP</div><div id="dashXp" class="font-display text-lg text-white">0</div></div>
-                        <div class="w-px bg-slate-700"></div>
-                        <div class="text-center w-1/2"><div class="text-[10px] text-slate-400 font-bold mb-1">자산 (B)</div><div id="dashBong" class="font-display text-lg text-sb-gold">0.0</div></div>
+                
+                <!-- 왼쪽 패널 (아바타 카드 & 무기고) -->
+                <div class="md:w-1/3 flex flex-col gap-4 sm:gap-6">
+                    <!-- 아바타 카드 -->
+                    <div class="glass-panel rounded-3xl p-6 flex flex-col items-center justify-center relative overflow-hidden bg-card-grad shadow-lg border border-slate-600">
+                        <div id="dashJobBadge" class="absolute top-4 left-4 flex gap-1 flex-col z-20"></div>
+                        <div id="dashShield" class="absolute top-4 right-4 text-2xl z-20"></div>
+                        <div id="dashAvatar" class="text-6xl sm:text-7xl mb-4 relative z-10 drop-shadow-xl avatar-bounce mt-4">👦</div>
+                        <h3 id="dashName" class="text-2xl font-display text-white mt-2 z-10 tracking-wider">이름</h3>
+                        <div id="dashLevelName" class="text-xs font-bold text-sb-blue mb-4 z-10 bg-slate-900 px-3 py-1 rounded-full border border-slate-700">Lv.1 새내기</div>
+                        <div class="flex w-full justify-center gap-4 border-t border-slate-700/80 pt-4 z-10">
+                            <div class="text-center w-1/2"><div class="text-[10px] text-slate-400 font-bold mb-1">XP</div><div id="dashXp" class="font-display text-lg text-white">0</div></div>
+                            <div class="w-px bg-slate-700"></div>
+                            <div class="text-center w-1/2"><div class="text-[10px] text-slate-400 font-bold mb-1">자산 (B)</div><div id="dashBong" class="font-display text-lg text-sb-gold">0.0</div></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 내 무기고 (인벤토리) -->
+                    <div class="glass-panel rounded-3xl p-4 shadow-lg border-t-4 border-t-purple-500 bg-slate-800/80">
+                        <h3 class="font-bold text-sm text-slate-300 mb-2 flex justify-between items-center">
+                            <span><i class="fa-solid fa-khanda text-purple-400 mr-1"></i> 내 무기고 <span class="text-[9px] font-normal text-slate-400">(터치하여 장착)</span></span>
+                        </h3>
+                        <div id="weaponSlots" class="flex gap-2 overflow-x-auto scrollbar-hide py-1">
+                            <!-- JS Rendering -->
+                            <span class="text-[10px] text-slate-500 my-2">보유한 무기가 없습니다. 퀘스트를 달성해보세요!</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 상태 바 & 컨디션 UI -->
+                <!-- 오른쪽 패널 (상태 바 & 투두 리스트) -->
                 <div class="md:w-2/3 flex flex-col gap-4 sm:gap-6">
                     <!-- 경험치 바 & 컨디션 선택기 -->
                     <div class="glass-panel p-5 rounded-3xl shadow-lg relative overflow-hidden bg-slate-800/80">
@@ -505,6 +519,15 @@
             { val: 5, label: '최상', icon: 'fa-battery-full', color: 'text-emerald-500' }
         ];
 
+        // ⚔️ 무기 데이터 (레이드 데미지 보너스)
+        const WEAPON_DATA = [
+            { id: 'wp1', name: '나뭇가지', desc: '데미지 +10', bonus: 10, emoji: '🌿', border: 'border-amber-700', bg: 'bg-amber-900/40' },
+            { id: 'wp2', name: '낡은 단검', desc: '데미지 +20', bonus: 20, emoji: '🗡️', border: 'border-slate-500', bg: 'bg-slate-700/40' },
+            { id: 'wp3', name: '기사의 검', desc: '데미지 +35', bonus: 35, emoji: '⚔️', border: 'border-blue-400', bg: 'bg-blue-900/40' },
+            { id: 'wp4', name: '마법 지팡이', desc: '데미지 +50', bonus: 50, emoji: '🪄', border: 'border-purple-500', bg: 'bg-purple-900/40' },
+            { id: 'wp5', name: '화염의 성검', desc: '데미지 +80', bonus: 80, emoji: '🔥', border: 'border-red-500', bg: 'bg-red-900/40' }
+        ];
+
         const JOB_DATA = [
             { id: 'job_sp', name: '학생회 연합대장', sub: '(전교회장)', icon: 'fa-crown', color: 'text-amber-400', pay: 15, desc: '학교의 평화 리더' },
             { id: 'job_svp', name: '학생회 부대장', sub: '(전교부회장)', icon: 'fa-shield-cat', color: 'text-amber-200', pay: 12, desc: '학교의 든든한 방패' },
@@ -588,7 +611,8 @@
         window.playerState = { 
             xp: 0, bong: 0.0, quests: {}, unlockedQuests: {}, jobs: [], 
             ownedSkins: {}, equippedSkins: {}, hasShield: false, shieldHP: 0, 
-            condition: null, dragonBalls: [], isGuest: false, isGM: false, isGMA: false, isAdmin: false 
+            condition: null, dragonBalls: [], inventory: [], equippedWeapon: null,
+            isGuest: false, isGM: false, isGMA: false, isAdmin: false 
         };
         
         window.allStudentsData = []; 
@@ -1024,6 +1048,14 @@
                         }
                     });
                 }
+
+                // 무기 장착 표시 (광장 캐릭터 하단)
+                if (displayData.equippedWeapon) {
+                    const wp = WEAPON_DATA.find(w => w.id === displayData.equippedWeapon);
+                    if (wp) {
+                        overlays += `<span class="absolute bottom-0 -left-3 text-[1.5em] z-30 drop-shadow-md">${wp.emoji}</span>`;
+                    }
+                }
                 
                 const hp = (displayData.shieldHP || 0) + (displayData.hasShield ? 100 : 0);
                 const shieldHtml = hp > 0 ? `<div class="absolute -top-2 -left-2 z-30 animate-pulse text-lg">🛡️<span class="text-[8px] font-bold text-white bg-indigo-600 px-0.5 rounded -ml-1 shadow">${hp}</span></div>` : '';
@@ -1060,8 +1092,8 @@
                     return `
                     <div class="flex flex-col items-center p-3 rounded-xl border-2 w-full transition ${cGlow} ${cBorder} bg-slate-900 mx-auto z-10 relative">
                         ${shieldHtml}${condHtml}
-                        <div class="text-4xl sm:text-5xl avatar-legend mb-2 z-10">
-                            ${isA?'🏴‍☠️':'🐉'}<span class="absolute -bottom-1 -right-1 text-xl">${isA?'🌊':'🔥'}</span>
+                        <div class="text-4xl sm:text-5xl avatar-legend mb-2 z-10 relative">
+                            ${isA?'🏴‍☠️':'🐉'}<span class="absolute -bottom-1 -right-1 text-xl">${isA?'🌊':'🔥'}</span>${overlays}
                         </div>
                         <div class="text-[8px] font-black ${isA?'text-cyan-400':'text-sb-gold'} mb-0.5">${isA?'해적섬 두목':'창조자'}</div>
                         <div class="font-bold bg-gradient-to-r ${isA?'from-cyan-600 to-blue-800 text-white':'from-sb-gold to-yellow-300 text-slate-900'} px-1 py-0.5 rounded text-[9px] w-full text-center truncate border border-slate-700">
@@ -1115,6 +1147,11 @@
                         SKIN_DATA.forEach(sk => { 
                             if (stu.equippedSkins[sk.id] && sk.type === 'face') faceEmoji = sk.emoji; 
                         }); 
+                    }
+
+                    if (stu.equippedWeapon) {
+                        const wp = WEAPON_DATA.find(w => w.id === stu.equippedWeapon);
+                        if (wp) faceEmoji += wp.emoji;
                     }
                     
                     let condStr = '';
@@ -1174,18 +1211,19 @@
 
 
         // ==========================================
-        // ★ 7. 내 상태 UI 및 퀘스트 처리 ★
+        // ★ 7. 내 상태 UI 및 퀘스트/인벤토리 처리 ★
         // ==========================================
         function updateUI() {
             if (!window.playerState.isGuest && !currentStudentDocRef) return;
             
             if(!window.playerState.ownedSkins) window.playerState.ownedSkins = {};
             if(!window.playerState.equippedSkins) window.playerState.equippedSkins = {};
+            if(!window.playerState.inventory) window.playerState.inventory = [];
 
-            // 권한에 따른 탭 노출만 관리 (Section을 직접 숨기지 않고 탭으로 이동하게 둠)
+            // 권한에 따른 탭 노출만 관리
             if (window.playerState.isAdmin) {
                 document.getElementById('tab-admin').classList.remove('hidden');
-                document.getElementById('todoPanel').classList.add('hidden'); // 마스터는 투두리스트 사용 불가
+                document.getElementById('todoPanel').classList.add('hidden'); 
                 if(window.playerState.isGM) {
                     document.getElementById('gmOnlyPanels').classList.remove('hidden');
                     document.getElementById('gmResetPanel').classList.remove('hidden');
@@ -1213,6 +1251,14 @@
                     }
                 }); 
             }
+
+            // 아바타 카드 무기 장착 표시
+            if(window.playerState.equippedWeapon) {
+                const wp = WEAPON_DATA.find(w => w.id === window.playerState.equippedWeapon);
+                if(wp) {
+                    overlays += `<span class="absolute bottom-0 -left-4 text-3xl z-30 drop-shadow-lg animate-bounce">${wp.emoji}</span>`;
+                }
+            }
             
             document.getElementById('dashAvatar').innerHTML = `<div class="relative inline-block leading-none">${face}${overlays}</div><div class="text-[0.5em] absolute -bottom-1 -right-2 animate-pulse">${window.playerState.isAdmin?'👑':lvInfo.info.prop}</div>`;
             document.getElementById('dashName').innerText = STUDENT_NAMES[localStorage.getItem('sambong_student_id')] || '손님';
@@ -1235,7 +1281,30 @@
             document.getElementById('expBar').style.width = window.playerState.isAdmin ? '100%' : `${Math.min(100, Math.max(0, progress))}%`;
             document.getElementById('expText').innerText = window.playerState.isAdmin ? 'MAX' : (exactLv >= 100 ? 'MAX' : `${Math.floor(progress)}%`);
 
-            // 선택된 컨디션 UI 복원 (버튼 시각적 활성화만 수행, 저장은 안함)
+            // 무기고(인벤토리) 렌더링
+            const invPanel = document.getElementById('weaponSlots');
+            if (invPanel) {
+                if (window.playerState.inventory.length === 0) {
+                    invPanel.innerHTML = '<span class="text-[10px] text-slate-500 my-2">보유한 무기가 없습니다. 퀘스트를 완료해 획득해보세요!</span>';
+                } else {
+                    invPanel.innerHTML = window.playerState.inventory.map(wpId => {
+                        const wp = WEAPON_DATA.find(w => w.id === wpId);
+                        if(!wp) return '';
+                        const isEquipped = window.playerState.equippedWeapon === wpId;
+                        const borderCls = isEquipped ? 'border-sb-gold bg-yellow-900/40 ring-2 ring-sb-gold scale-105' : `${wp.border} ${wp.bg}`;
+                        
+                        return `
+                        <div onclick="window.equipWeapon('${wpId}')" class="cursor-pointer border-2 rounded-xl p-2 flex flex-col items-center justify-center min-w-[65px] transition transform hover:scale-105 ${borderCls} relative shrink-0">
+                            ${isEquipped ? '<div class="absolute -top-2 -right-1 bg-sb-gold text-slate-900 text-[8px] font-black px-1 rounded shadow-md z-10">E</div>' : ''}
+                            <div class="text-2xl mb-1">${wp.emoji}</div>
+                            <div class="text-[9px] font-bold text-white whitespace-nowrap">${wp.name}</div>
+                            <div class="text-[8px] text-emerald-400 font-bold">+${wp.bonus} DMG</div>
+                        </div>`;
+                    }).join('');
+                }
+            }
+
+            // 선택된 컨디션 UI 복원
             if(window.playerState.condition && window.playerState.condition.emotion) {
                 window.selectEmotion(window.playerState.condition.emotion.id, false);
                 window.selectBody(window.playerState.condition.body.val, false);
@@ -1284,7 +1353,7 @@
                 dbSlots.innerHTML = slotsHtml;
             }
 
-            // 전체 퀘스트/상점 UI 렌더링 (퀘스트 탭)
+            // 전체 퀘스트/상점 UI 렌더링
             const renderQuests = (quests, containerId) => {
                 const today = new Date().getDay();
                 document.getElementById(containerId).innerHTML = quests.map(q => {
@@ -1354,7 +1423,7 @@
                 }
             });
 
-            // 스킨 및 아이템 상점 갱신
+            // 스킨 상점 갱신
             SKIN_DATA.forEach(skin => {
                 const item = document.getElementById(`skin-btn-${skin.id}`); 
                 const status = document.getElementById(`skin-status-${skin.id}`);
@@ -1406,6 +1475,7 @@
                 xp: 8500, bong: 120.0, quests: {}, unlockedQuests: {}, 
                 jobs: [{name: '게스트', icon: 'fa-eye', color: 'text-slate-400'}], 
                 ownedSkins: {}, equippedSkins: {}, hasShield: false, shieldHP: 100, 
+                inventory: ['wp1'], equippedWeapon: 'wp1',
                 isGuest: true, isGM: false, isGMA: false, isAdmin: false 
             };
             
@@ -1451,7 +1521,7 @@
                     const isOk = await window.customConfirm(`[${STUDENT_NAMES[studentId]}]\n입력하신 [${pin}] 번호가 영구 비밀번호로 설정됩니다.\n접속하시겠습니까?`);
                     if(!isOk) return;
                     
-                    data = { pin, xp: 0, bong: 0.0, quests: {}, unlockedQuests: {}, jobs: [], ownedSkins: {}, equippedSkins: {}, hasShield: false, shieldHP: 0 };
+                    data = { pin, xp: 0, bong: 0.0, quests: {}, unlockedQuests: {}, jobs: [], ownedSkins: {}, equippedSkins: {}, inventory: [], equippedWeapon: null, hasShield: false, shieldHP: 0 };
                     await setDoc(docRef, data);
                 }
 
@@ -1508,25 +1578,59 @@
             await setDoc(currentStudentDocRef, dataToSave, { merge: true }); 
         }
 
+
         // ==========================================
-        // ★ 9. 유저 행동 처리 로직 ★
+        // ★ 9. 퀘스트, 아이템 & 무기 로직 ★
         // ==========================================
-        window.toggleJob = async function(jobName, iconClass, colorClass) {
-            if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드입니다.");
+        window.equipWeapon = async function(wpId) {
+            if (window.playerState.isGuest) return window.customAlert("👀 게스트 모드입니다.");
             
-            if (!window.playerState.jobs) window.playerState.jobs = [];
-            const existingIndex = window.playerState.jobs.findIndex(j => j.name === jobName);
-            
-            if (existingIndex > -1) {
-                window.playerState.jobs.splice(existingIndex, 1);
+            if (window.playerState.equippedWeapon === wpId) {
+                window.playerState.equippedWeapon = null; // 장착 해제
             } else {
-                window.playerState.jobs.push({ name: jobName, icon: iconClass, color: colorClass });
+                window.playerState.equippedWeapon = wpId; // 장착
             }
-            
-            updateUI(); 
-            saveDataToCloud(); 
-            window.switchTab('plaza');
+            updateUI();
+            saveDataToCloud();
+            window.switchTab('plaza'); // 광장에서 장착 모습 확인하도록 이동
         };
+
+        async function handleQuestDrop(xp) {
+            const rand = Math.random() * 100;
+            let dropped = null;
+            
+            // 난이도(XP)에 따른 드랍 테이블
+            if (xp >= 500) {
+                if (rand < 20) dropped = 'wp5';
+                else if (rand < 50) dropped = 'wp4';
+                else dropped = 'wp3';
+            } else if (xp >= 100) {
+                if (rand < 5) dropped = 'wp4';
+                else if (rand < 15) dropped = 'wp3';
+                else if (rand < 30) dropped = 'wp2';
+            } else if (xp >= 50) {
+                if (rand < 2) dropped = 'wp3';
+                else if (rand < 10) dropped = 'wp2';
+                else if (rand < 25) dropped = 'wp1';
+            } else {
+                if (rand < 1) dropped = 'wp2';
+                else if (rand < 10) dropped = 'wp1';
+            }
+
+            if (dropped) {
+                const wp = WEAPON_DATA.find(w => w.id === dropped);
+                if (!window.playerState.inventory) window.playerState.inventory = [];
+                
+                if (window.playerState.inventory.includes(dropped)) {
+                    const comp = 10;
+                    window.playerState.bong += comp;
+                    await window.customAlert(`🎁 퀘스트 보상으로 [${wp.emoji} ${wp.name}] 무기를 또 발견했습니다!\n하지만 이미 보유 중이라 중복 보상 ${comp} B로 변환되었습니다.`);
+                } else {
+                    window.playerState.inventory.push(dropped);
+                    await window.customAlert(`🎉 [무기 드랍 대박!]\n새로운 무기 [${wp.emoji} ${wp.name}] (데미지 +${wp.bonus}) 을(를) 획득했습니다!\n상태 탭의 내 무기고에서 장착하세요.`);
+                }
+            }
+        }
 
         window.attemptQuest = async function(qId, xp, bong) {
             if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드입니다.");
@@ -1559,6 +1663,9 @@
                 window.playerState.bong += bonus; 
                 await window.customAlert(`🎉 레벨업 축하합니다!\n보너스 자산 [${bonus} B] 지급!`); 
             }
+            
+            // 무기 드랍 체크
+            await handleQuestDrop(xp);
             
             updateUI(); 
             saveDataToCloud();
@@ -1633,6 +1740,23 @@
             }
         };
 
+        window.toggleJob = async function(jobName, iconClass, colorClass) {
+            if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드입니다.");
+            
+            if (!window.playerState.jobs) window.playerState.jobs = [];
+            const existingIndex = window.playerState.jobs.findIndex(j => j.name === jobName);
+            
+            if (existingIndex > -1) {
+                window.playerState.jobs.splice(existingIndex, 1);
+            } else {
+                window.playerState.jobs.push({ name: jobName, icon: iconClass, color: colorClass });
+            }
+            
+            updateUI(); 
+            saveDataToCloud(); 
+            window.switchTab('plaza');
+        };
+
         window.handleSkin = async function(skinId) {
             if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드입니다.");
             const skin = SKIN_DATA.find(s => s.id === skinId);
@@ -1705,7 +1829,8 @@
                         pin: stu.pin || '',
                         xp: 0, bong: 0.0, quests: {}, unlockedQuests: {}, jobs: [],
                         ownedSkins: {}, equippedSkins: {}, hasShield: false, shieldHP: 0,
-                        condition: null, dragonBalls: [], earlyBirdCount: 0
+                        condition: null, dragonBalls: [], earlyBirdCount: 0,
+                        inventory: [], equippedWeapon: null // 무기 초기화
                     });
                 }
                 await batch.commit();
@@ -1903,7 +2028,7 @@
 
 
         // ==========================================
-        // ★ 11. 레이드 및 공지, 드래곤볼 로직 ★
+        // ★ 11. NPC 공지, 드래곤볼 로직 ★
         // ==========================================
         window.talkToNPC = function() { 
             const el = document.getElementById('npcText'); 
@@ -2054,6 +2179,9 @@
             const p = window.currentRaidState.participants || [];
             rCount.innerText = p.length;
             
+            // ★ 추가: 기본 클릭 이벤트를 '참가'로 매번 초기화해줍니다.
+            btn.onclick = () => window.joinRaid(); 
+            
             if(s === 'waiting') { 
                 btn.innerText = "모집 대기중"; 
                 btn.disabled = true; 
@@ -2064,9 +2192,11 @@
                 countDiv.classList.remove('hidden');
                 
                 if(p.includes(localStorage.getItem('sambong_student_id'))) { 
-                    btn.innerText = "입장 대기중..."; 
-                    btn.disabled = true; 
-                    btn.className = "w-full bg-purple-600/50 text-white font-bold py-2.5 px-4 rounded-xl text-xs cursor-not-allowed"; 
+                    // ★ 수정: 입장 대기중일 때 참가 취소 버튼으로 변신
+                    btn.innerText = "❌ 참가 취소"; 
+                    btn.disabled = false; 
+                    btn.onclick = () => window.cancelRaidJoin();
+                    btn.className = "w-full bg-red-600/80 hover:bg-red-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition"; 
                 }
                 else if(p.length >= 5) { 
                     btn.innerText = "모집 완료"; 
@@ -2109,6 +2239,22 @@
                             : s === 'playing' ? '전투중' 
                             : s === 'finished' ? '클리어' : '실패';
             }
+        };
+
+        // ★ 추가: 레이드 참가 취소 함수
+        window.cancelRaidJoin = async function() {
+            if(window.playerState.isGuest) return; 
+            const mId = localStorage.getItem('sambong_student_id'); 
+            const st = window.currentRaidState;
+            
+            if(!st || st.status !== 'recruiting' || !st.participants.includes(mId)) return;
+            
+            const ok = await window.customConfirm("레이드 참가를 취소하시겠습니까?");
+            if(!ok) return;
+
+            // 내 아이디를 제외한 배열로 덮어쓰기
+            const np = st.participants.filter(id => id !== mId); 
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'raid', 'state'), { participants: np }, {merge: true});
         };
 
         window.updateRaidBattleUI = function() {
@@ -2314,20 +2460,37 @@
             
             let d = 0, m = '', cb = st.combo || 0;
             
+            // ★ 무기 데미지 보너스 체크 ★
+            let weaponBonus = 0;
+            let weaponEmoji = '';
+            if (window.playerState.equippedWeapon) {
+                const wp = WEAPON_DATA.find(w => w.id === window.playerState.equippedWeapon);
+                if (wp) {
+                    weaponBonus = wp.bonus;
+                    weaponEmoji = wp.emoji;
+                }
+            }
+
             if(idx === -1) { 
-                d = -50; m = `시간초과!`; cb = 0; 
+                d = -50; m = `시간초과!`; cb = 0; weaponBonus = 0;
             } else if(idx === -2) { 
-                d = -50; m = `이탈!`; cb = 0; 
+                d = -50; m = `이탈!`; cb = 0; weaponBonus = 0;
             } else if(idx === ans) { 
                 if(t <= 10) { d = 250; m = `💥크리티컬!`; cb++; }
                 else if(t <= 20) { d = 150; m = `⚔️그레이트!`; cb++; }
                 else { d = 80; m = `굿!`; cb++; } 
             } else { 
-                d = -50; m = `❌오답!`; cb = 0; 
+                d = -50; m = `❌오답!`; cb = 0; weaponBonus = 0;
                 if(navigator.vibrate) navigator.vibrate([200,100,200]); 
                 
                 document.getElementById('raidBattleModal').classList.add('shake-screen'); 
                 setTimeout(() => document.getElementById('raidBattleModal').classList.remove('shake-screen'), 300); 
+            }
+
+            // 무기 추가 데미지 적용
+            if (weaponBonus > 0 && d > 0) {
+                d += weaponBonus;
+                m += ` (+${weaponBonus}${weaponEmoji})`;
             }
             
             let nH = Math.min(st.maxBossHP, st.bossHP - d); 
