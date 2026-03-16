@@ -405,20 +405,21 @@
         <section id="lunchSection" class="hidden">
             <div class="mb-4">
                 <h2 class="text-xl sm:text-2xl font-display text-orange-400"><i class="fa-solid fa-utensils"></i> VIP 밥줄 (우선 배식)</h2>
-                <p class="text-[10px] sm:text-xs text-slate-300 mt-1">평일 기본 급식비(10B)는 접속 시 자동 차감됩니다!</p>
+                <p class="text-[10px] sm:text-xs text-slate-300 mt-1">매일 낮 12시 정각에 평일 기본 급식비(10B)가 자동 차감됩니다!</p>
                 <p class="text-[10px] sm:text-xs text-slate-400">추가 식권을 비싸게 입찰할수록 밥을 먼저 먹으며, 금액이 같을 경우 <span class="text-sb-blue font-bold">레벨(XP)이 높은 사람</span>이 우선권을 가집니다.</p>
             </div>
             
             <div class="glass-panel p-4 sm:p-5 rounded-2xl mb-6 border border-orange-500/30">
-                <h3 class="font-bold text-sm text-white mb-3">추가 식권 입찰</h3>
+                <h3 class="font-bold text-sm text-white mb-3">추가 식권 입찰 (누구나 언제든 가능)</h3>
                 <div class="flex gap-2">
                     <input type="number" id="lunchBidInput" placeholder="추가 투자할 B 입력" class="flex-1 bg-slate-900 border border-slate-700 text-white px-4 py-2 rounded-xl text-sm font-bold focus:outline-none focus:border-orange-500">
                     <button onclick="window.submitLunchBid()" class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition transform hover:scale-105">입찰</button>
                 </div>
             </div>
 
-            <div class="glass-panel p-2 sm:p-4 rounded-2xl">
-                <h3 class="font-bold text-sm text-slate-300 mb-3 ml-2">오늘의 배식 순위</h3>
+            <!-- 12시 10분 전까지 학생들에게는 이 영역이 숨겨집니다 -->
+            <div id="lunchQueueWrapper" class="glass-panel p-2 sm:p-4 rounded-2xl hidden">
+                <h3 class="font-bold text-sm text-slate-300 mb-3 ml-2">오늘의 배식 순위 <span class="text-[10px] text-orange-400">(12시 10분 공개)</span></h3>
                 <div id="lunchQueueContainer" class="space-y-2">
                     <div class="text-slate-500 text-xs p-2">데이터 로딩 중...</div>
                 </div>
@@ -1068,10 +1069,16 @@
                             }
                         });
 
-                        // 자동 주급 분배 타이머 (관리자만 실행)
+                        // 자동 주급 분배 및 낮 12시 급식비 차감 타이머 (관리자만 실행)
                         if (window.playerState.isGM) { 
-                            setInterval(window.checkAndDistributeSalary, 60000); 
-                            setTimeout(window.checkAndDistributeSalary, 3000); 
+                            setInterval(() => {
+                                window.checkAndDistributeSalary();
+                                window.checkAndDeductLunch();
+                            }, 60000); 
+                            setTimeout(() => {
+                                window.checkAndDistributeSalary();
+                                window.checkAndDeductLunch();
+                            }, 3000); 
                         }
                         
                         // 기존 로그인 내역 확인
@@ -1094,15 +1101,22 @@
             const now = new Date();
             const h = now.getHours();
             const m = now.getMinutes();
-            const isPast1205 = (h > 12) || (h === 12 && m >= 5);
+            // 12시 10분 이후인지 체크
+            const isPast1210 = (h > 12) || (h === 12 && m >= 10);
             
             const lunchTab = document.getElementById('tab-lunch');
             if (lunchTab) {
-                if (isPast1205 || (window.playerState && window.playerState.isAdmin)) {
-                    lunchTab.classList.remove('hidden');
+                // 밥줄 탭은 학생들이 입찰할 수 있도록 항상 표시합니다.
+                lunchTab.classList.remove('hidden');
+            }
+
+            const queueContainer = document.getElementById('lunchQueueWrapper');
+            if (queueContainer) {
+                // 마스터거나, 12시 10분이 지났으면 순위표를 공개합니다.
+                if ((window.playerState && window.playerState.isAdmin) || isPast1210) {
+                    queueContainer.classList.remove('hidden');
                 } else {
-                    lunchTab.classList.add('hidden');
-                    if (currentTabIndex === TABS.indexOf('lunch')) window.switchTab('dashboard');
+                    queueContainer.classList.add('hidden');
                 }
             }
         }
@@ -1192,8 +1206,8 @@
                             <button onclick="window.quickReward('xp', -5, '${targetId}', this)" class="flex-1 bg-slate-700 text-slate-300 text-[9px] font-bold py-1 rounded hover:bg-sb-red">-5X</button>
                         </div>
                         <div class="flex gap-0.5">
-                            <button onclick="window.quickReward('bong', 1, '${targetId}', this)" class="flex-1 bg-sb-gold/20 text-sb-gold text-[9px] font-bold py-1 rounded">+1B</button>
-                            <button onclick="window.quickReward('bong', -1, '${targetId}', this)" class="flex-1 bg-slate-700 text-slate-300 text-[9px] font-bold py-1 rounded hover:bg-sb-red">-1B</button>
+                            <button onclick="window.quickReward('bong', 2, '${targetId}', this)" class="flex-1 bg-sb-gold/20 text-sb-gold text-[9px] font-bold py-1 rounded">+2B</button>
+                            <button onclick="window.quickReward('bong', -2, '${targetId}', this)" class="flex-1 bg-slate-700 text-slate-300 text-[9px] font-bold py-1 rounded hover:bg-sb-red">-2B</button>
                         </div>
                     </div>` : '';
 
@@ -1289,7 +1303,7 @@
                             ${(stu.bong||0).toFixed(1)} B
                         </td>
                         <td class="p-2 border-l border-slate-700/50 w-24">
-                            ${canEdit ? `<div class="flex gap-1"><button onclick="window.quickReward('xp', 5, '${stu.id}', this)" class="bg-sb-blue/20 text-sb-blue px-1 py-1 rounded text-[8px]">+5X</button><button onclick="window.quickReward('bong', 1, '${stu.id}', this)" class="bg-sb-gold/20 text-yellow-400 px-1 py-1 rounded text-[8px]">+1B</button></div>` : '-'}
+                            ${canEdit ? `<div class="flex gap-1"><button onclick="window.quickReward('xp', 5, '${stu.id}', this)" class="bg-sb-blue/20 text-sb-blue px-1 py-1 rounded text-[8px]">+5X</button><button onclick="window.quickReward('bong', 2, '${stu.id}', this)" class="bg-sb-gold/20 text-yellow-400 px-1 py-1 rounded text-[8px]">+2B</button></div>` : '-'}
                         </td>
                     </tr>`;
                 }
@@ -1688,15 +1702,14 @@
                 }
 
                 // ★ 일일 퀘스트 및 식권(점심 자동이체) 초기화 로직
-                let notifyLunchDeduction = false;
                 if (!isAdmin) {
                     const now = new Date(); 
                     const gameDateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`; 
-                    const isWeekday = now.getDay() >= 1 && now.getDay() <= 5;
                     
                     let shouldMerge = false;
                     let updateData = {};
                     
+                    // 일일 퀘스트 초기화
                     if (data.lastDailyReset !== gameDateStr) {
                         const dailyQuestIds = QUEST_DATA.filter(q => q.type === 'daily').map(q => q.id);
                         let updatedQuests = { ...(data.quests || {}) };
@@ -1711,14 +1724,10 @@
                         shouldMerge = true;
                     }
 
-                    // 밥줄 초기화 및 평일 10B 차감 로직
+                    // 밥줄 입찰 초기화 (매일 자정 갱신)
                     if (!data.lunchBid || data.lunchBid.date !== gameDateStr) {
                         updateData.lunchBid = { date: gameDateStr, amount: 0 };
                         shouldMerge = true;
-                        if (isWeekday) {
-                            updateData.bong = Math.max(0, (data.bong || 0) - 10);
-                            notifyLunchDeduction = true; // 접속 시 알림을 위해 플래그 설정
-                        }
                     }
 
                     if (shouldMerge) {
@@ -1741,9 +1750,6 @@
                 updateUI(); 
                 window.renderPlaza(window.allStudentsData, window.gmData, window.gmaData); 
                 
-                if (notifyLunchDeduction && !isAutoLogin) {
-                    await window.customAlert(`🏫 등교 완료!\n\n오늘자 평일 기본 급식비(10 B)가 자동 이체되었습니다.\n맛있는 점심시간 되세요!`);
-                }
                 window.switchTab(isAdmin ? 'admin' : 'dashboard');
             } catch (e) { 
                 await window.customAlert("에러: " + e.message); 
@@ -2090,6 +2096,38 @@
                     batch.set(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global'), { lastSalaryWeek: wId }, {merge: true});
                     await batch.commit(); 
                     window.customAlert(`💰 자동 주급 정산 완료! (${count}명 지급)`);
+                }
+            }
+        };
+
+        window.checkAndDeductLunch = async function() {
+            if (!window.playerState.isGM || !window.allStudentsData || window.allStudentsData.length === 0) return;
+            const now = new Date(); 
+            const day = now.getDay(); 
+            const hours = now.getHours(); 
+            
+            // 평일(월~금) 12시 0분 이후인지 체크
+            const isWeekday = day >= 1 && day <= 5;
+            const isPast1200 = hours >= 12;
+            
+            if (isWeekday && isPast1200) {
+                const todayStr = `LUNCH_${now.getFullYear()}_${String(now.getMonth() + 1).padStart(2, '0')}_${String(now.getDate()).padStart(2, '0')}`;
+                
+                if (window.globalSettings.lastLunchDeduction !== todayStr) {
+                    const batch = writeBatch(db); 
+                    let count = 0;
+                    
+                    for (const stu of window.allStudentsData) {
+                        if (stu.id === 'gm' || stu.id === 'gm_a') continue;
+                        batch.set(doc(db, 'artifacts', appId, 'public', 'data', 'students', 'student_' + stu.id), { 
+                            bong: Math.max(0, (stu.bong || 0) - 10) 
+                        }, { merge: true }); 
+                        count++; 
+                    }
+                    
+                    batch.set(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global'), { lastLunchDeduction: todayStr }, {merge: true});
+                    await batch.commit(); 
+                    window.customAlert(`🍱 낮 12시 정각! 평일 기본 급식비(10B) 자동 차감 완료! (${count}명)`);
                 }
             }
         };
