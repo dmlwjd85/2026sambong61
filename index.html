@@ -116,7 +116,7 @@
         </div>
 
         <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-sm w-full shadow-2xl border-t-4 border-t-sb-blue relative z-10">
-            <h2 class="text-lg sm:text-xl font-bold text-center text-white mb-6">플레이어 로그인</h2>
+            <h2 class="text-lg sm:text-xl font-bold text-center text-white mb-6">삼봉월드 로그인</h2>
             <div class="space-y-4">
                 <select id="loginId" class="w-full bg-slate-800/80 border border-slate-600 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-sb-blue font-bold appearance-none">
                     <option value="" disabled selected>내 이름(학번) 선택</option>
@@ -132,9 +132,9 @@
                 </select>
                 <input type="password" id="loginPin" placeholder="비밀번호(PIN) 4자리" class="w-full bg-slate-800/80 border border-slate-600 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-sb-blue font-bold text-center tracking-[0.5em]" maxlength="4" pattern="[0-9]*" inputmode="numeric">
                 <p class="text-[10px] sm:text-xs text-slate-500 text-center"><i class="fa-solid fa-circle-info"></i> 처음 입력한 번호가 영구 비밀번호가 됩니다.</p>
-                <button id="btnLogin" class="w-full bg-gradient-to-r from-sb-blue to-cyan-500 hover:from-blue-500 text-white font-bold py-3 rounded-xl shadow-lg transition transform hover:scale-105">월드 접속</button>
+                <button id="btnLogin" class="w-full bg-gradient-to-r from-sb-blue to-cyan-500 hover:from-blue-500 text-white font-bold py-3 rounded-xl shadow-lg transition transform hover:scale-105">접속하기</button>
                 <div class="mt-4 pt-4 border-t border-slate-700/50">
-                    <button onclick="window.loginAsGuest()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-400 font-bold py-2 rounded-xl transition text-xs sm:text-sm"><i class="fa-solid fa-eye"></i> 게스트 구경하기</button>
+                    <button onclick="window.loginAsGuest()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-400 font-bold py-2 rounded-xl transition text-xs sm:text-sm"><i class="fa-solid fa-eye"></i> 게스트로 구경하기</button>
                 </div>
             </div>
         </div>
@@ -174,11 +174,11 @@
     <!-- ★ 레이드 전투 모달 (전체 화면) ★ -->
     <div id="raidBattleModal" class="hidden fixed inset-0 z-[200] bg-slate-900 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIvPjwvc3ZnPg==')] flex flex-col transition-all duration-300">
         <button id="btnGiveUpRaid" onclick="window.giveUpRaid()" class="absolute top-4 left-4 bg-slate-800/80 hover:bg-sb-red text-white border border-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold transition z-50 shadow-lg flex items-center gap-1">
-            <i class="fa-solid fa-person-running"></i> 도망치기
+            <i class="fa-solid fa-person-running"></i> 도망가기
         </button>
         
         <div class="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden" id="raidBossArea">
-            <h2 class="text-2xl sm:text-4xl font-display text-white mb-2 z-10 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]"><i class="fa-solid fa-skull"></i> 어둠의 보스</h2>
+            <h2 class="text-2xl sm:text-4xl font-display text-white mb-2 z-10 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]"><i class="fa-solid fa-skull"></i> 보스 몬스터</h2>
             <div class="w-full max-w-lg bg-slate-800 rounded-full h-6 sm:h-8 border-2 border-slate-600 relative z-10 mb-6 overflow-hidden">
                 <div id="raidBossHPBar" class="bg-gradient-to-r from-red-600 to-red-400 h-full stat-fill w-full"></div>
                 <div class="absolute inset-0 flex items-center justify-center text-white font-black text-sm drop-shadow-md" id="raidBossHPText">1000/1000</div>
@@ -204,16 +204,16 @@
         
         <div class="h-48 sm:h-64 bg-slate-900 p-4 flex gap-4 overflow-hidden z-10">
             <div class="w-1/3 sm:w-1/4 border-r border-slate-700 pr-2 overflow-y-auto">
-                <h3 class="text-xs text-slate-400 font-bold mb-2 pb-1 border-b text-center">공격대</h3>
+                <h3 class="text-xs text-slate-400 font-bold mb-2 pb-1 border-b text-center">참여 학생</h3>
                 <div id="raidParticipantsList" class="flex flex-col gap-2"></div>
             </div>
             <div class="flex-1 flex flex-col">
-                <h3 class="text-xs text-slate-400 font-bold mb-2 pb-1 border-b">전투 로그</h3>
+                <h3 class="text-xs text-slate-400 font-bold mb-2 pb-1 border-b">전투 기록</h3>
                 <div id="raidLogContainer" class="flex-1 overflow-y-auto space-y-1 pr-2 font-mono text-[10px] text-slate-300 flex flex-col-reverse"></div>
             </div>
         </div>
         
-        <button id="btnExitRaid" onclick="window.closeRaidModal()" class="hidden absolute top-4 right-4 bg-slate-800 hover:bg-sb-red text-white border px-4 py-2 rounded-lg font-bold z-50">복귀</button>
+        <button id="btnExitRaid" onclick="window.closeRaidModal()" class="hidden absolute top-4 right-4 bg-slate-800 hover:bg-sb-red text-white border px-4 py-2 rounded-lg font-bold z-50">돌아가기</button>
     </div>
 
     <!-- 메인 콘텐츠 영역 (스와이프 래퍼) -->
@@ -242,11 +242,11 @@
                     <!-- 내 무기고 (인벤토리) -->
                     <div class="glass-panel rounded-3xl p-4 shadow-lg border-t-4 border-t-purple-500 bg-slate-800/80">
                         <h3 class="font-bold text-sm text-slate-300 mb-2 flex justify-between items-center">
-                            <span><i class="fa-solid fa-khanda text-purple-400 mr-1"></i> 내 무기고 <span class="text-[9px] font-normal text-slate-400">(터치하여 장착)</span></span>
+                            <span><i class="fa-solid fa-khanda text-purple-400 mr-1"></i> 내 인벤토리 <span class="text-[9px] font-normal text-slate-400">(터치하여 장착)</span></span>
                         </h3>
                         <div id="weaponSlots" class="flex gap-2 overflow-x-auto scrollbar-hide py-1">
                             <!-- JS Rendering -->
-                            <span class="text-[10px] text-slate-500 my-2">보유한 무기가 없습니다. 퀘스트를 달성해보세요!</span>
+                            <span class="text-[10px] text-slate-500 my-2">가진 아이템이 없어요. 퀘스트를 완료해보세요!</span>
                         </div>
                     </div>
                 </div>
@@ -257,7 +257,7 @@
                     <div class="glass-panel p-5 rounded-3xl shadow-lg relative overflow-hidden bg-slate-800/80">
                         <div class="relative z-10 mb-5">
                             <div class="flex justify-between items-center text-xs font-bold mb-2">
-                                <span class="text-emerald-400"><i class="fa-solid fa-star"></i> 다음 레벨까지 (EXP)</span>
+                                <span class="text-emerald-400"><i class="fa-solid fa-star"></i> 다음 레벨까지</span>
                                 <span class="text-white bg-slate-900 px-2 py-0.5 rounded text-[10px]" id="expText">0%</span>
                             </div>
                             <div class="w-full bg-slate-900 rounded-full h-4 border border-slate-700 p-0.5 shadow-inner">
@@ -268,19 +268,19 @@
                         <!-- ★ 오늘의 컨디션 기능 (자동 적용) ★ -->
                         <div class="border-t border-slate-700/50 pt-4 relative z-10">
                             <div class="flex justify-between items-end mb-3">
-                                <h3 class="font-bold text-sm text-slate-300"><i class="fa-solid fa-face-smile text-yellow-400 mr-1"></i> 오늘의 상태 (Condition)</h3>
+                                <h3 class="font-bold text-sm text-slate-300"><i class="fa-solid fa-face-smile text-yellow-400 mr-1"></i> 현재 내 상태</h3>
                                 <span class="text-[9px] text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-700">터치 시 자동 적용</span>
                             </div>
                             
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <div class="text-[10px] text-slate-400 mb-1.5 font-bold">나의 기분은?</div>
+                                    <div class="text-[10px] text-slate-400 mb-1.5 font-bold">기분</div>
                                     <div class="flex flex-wrap gap-1.5" id="emotionBtns">
                                         <!-- JS Rendering -->
                                     </div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] text-slate-400 mb-1.5 font-bold">신체 상태 (배터리)</div>
+                                    <div class="text-[10px] text-slate-400 mb-1.5 font-bold">체력</div>
                                     <div class="flex flex-wrap gap-1.5" id="bodyBtns">
                                         <!-- JS Rendering -->
                                     </div>
@@ -310,7 +310,7 @@
                     <!-- 투두 리스트 (관리자는 숨김) -->
                     <div id="todoPanel" class="glass-panel p-5 rounded-3xl shadow-lg border-t-4 border-t-emerald-500 bg-slate-800/80 max-h-56 overflow-y-auto scrollbar-hide">
                         <h3 class="font-bold text-sm text-slate-300 mb-3 flex justify-between items-center">
-                            <span><i class="fa-solid fa-list-check text-emerald-400 mr-1"></i> 오늘의 퀘스트</span>
+                            <span><i class="fa-solid fa-list-check text-emerald-400 mr-1"></i> 오늘의 할 일</span>
                             <span class="text-[9px] font-normal text-slate-400 bg-slate-900 px-2 py-1 rounded">터치하여 인증</span>
                         </h3>
                         <div id="todoContainer" class="space-y-2"></div>
@@ -344,8 +344,8 @@
         <section id="plazaSection" class="hidden">
             <div class="mb-4 flex justify-between items-end">
                 <div>
-                    <h2 class="text-xl sm:text-2xl font-display text-emerald-400"><i class="fa-solid fa-users"></i> 길드 광장</h2>
-                    <p class="text-[10px] sm:text-xs text-slate-400 mt-1">친구들의 상태(기분/레벨/직업)를 실시간으로 확인합니다.</p>
+                    <h2 class="text-xl sm:text-2xl font-display text-emerald-400"><i class="fa-solid fa-users"></i> 우리반 광장</h2>
+                    <p class="text-[10px] sm:text-xs text-slate-400 mt-1">친구들의 상태를 한눈에 확인해봐요.</p>
                 </div>
             </div>
             <div class="glass-panel p-2 sm:p-4 rounded-2xl shadow-xl">
@@ -398,11 +398,11 @@
                 <!-- Shop -->
                 <div class="space-y-4" id="shopArea">
                     <div class="glass-panel p-4 rounded-2xl border-t-4 border-t-pink-500">
-                        <h3 class="font-bold text-sm text-pink-400 mb-3 border-b border-slate-700 pb-2"><i class="fa-solid fa-shirt"></i> 스킨 부티크</h3>
+                        <h3 class="font-bold text-sm text-pink-400 mb-3 border-b border-slate-700 pb-2"><i class="fa-solid fa-shirt"></i> 스킨 상점</h3>
                         <div id="skinContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto scrollbar-hide"></div>
                     </div>
                     <div class="glass-panel p-4 rounded-2xl border-t-4 border-t-sb-gold">
-                        <h3 class="font-bold text-sm text-sb-gold mb-3 border-b border-slate-700 pb-2"><i class="fa-solid fa-store"></i> 아이템 & 기능 상점</h3>
+                        <h3 class="font-bold text-sm text-sb-gold mb-3 border-b border-slate-700 pb-2"><i class="fa-solid fa-store"></i> 아이템 상점</h3>
                         <div id="shopContainer" class="grid grid-cols-1 gap-3"></div>
                     </div>
                 </div>
@@ -412,8 +412,8 @@
         <!-- ★ 4. 직업 탭 (슬림 디자인) ★ -->
         <section id="jobsSection" class="hidden">
             <div class="mb-4">
-                <h2 class="text-xl sm:text-2xl font-display text-sb-gold"><i class="fa-solid fa-briefcase"></i> 15개 직업 클래스</h2>
-                <p class="text-[10px] sm:text-xs text-slate-400 mt-1">매주 금요일 14:40 자동 정산! 카드를 눌러 장착/해제하세요.</p>
+                <h2 class="text-xl sm:text-2xl font-display text-sb-gold"><i class="fa-solid fa-briefcase"></i> 15개 직업 목록</h2>
+                <p class="text-[10px] sm:text-xs text-slate-400 mt-1">금요일마다 월급이 들어와요! 카드를 눌러 직업을 선택하세요.</p>
             </div>
             <!-- 가로형 얇은 카드 레이아웃 -->
             <div id="jobGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3"></div>
@@ -422,13 +422,13 @@
         <!-- ★ 5. 새로 추가된 밥줄(점심) 탭 ★ -->
         <section id="lunchSection" class="hidden">
             <div class="mb-4">
-                <h2 class="text-xl sm:text-2xl font-display text-orange-400"><i class="fa-solid fa-utensils"></i> VIP 밥줄 (우선 배식)</h2>
-                <p class="text-[10px] sm:text-xs text-slate-300 mt-1">매일 낮 12시 정각에 평일 기본 급식비(10B)가 자동 차감됩니다!</p>
-                <p class="text-[10px] sm:text-xs text-slate-400">추가 식권을 비싸게 입찰할수록 밥을 먼저 먹으며, 금액이 같을 경우 <span class="text-sb-blue font-bold">레벨(XP)이 높은 사람</span>이 우선권을 가집니다.</p>
+                <h2 class="text-xl sm:text-2xl font-display text-orange-400"><i class="fa-solid fa-utensils"></i> 급식 우선권 (VIP 밥줄)</h2>
+                <p class="text-[10px] sm:text-xs text-slate-300 mt-1">매일 낮 12시 정각에 급식비(10B)가 자동으로 빠져나가요!</p>
+                <p class="text-[10px] sm:text-xs text-slate-400">투자한 돈(B)이 많을수록 밥을 먼저 먹어요. 동점이면 <span class="text-sb-blue font-bold">레벨(XP)이 높은 사람</span>이 이깁니다!</p>
             </div>
             
             <div class="glass-panel p-4 sm:p-5 rounded-2xl mb-6 border border-orange-500/30">
-                <h3 class="font-bold text-sm text-white mb-3">추가 식권 입찰 (누구나 언제든 가능)</h3>
+                <h3 class="font-bold text-sm text-white mb-3">식권 투자하기 (누구나 가능)</h3>
                 <div class="flex gap-2">
                     <input type="number" id="lunchBidInput" placeholder="추가 투자할 B 입력" class="flex-1 bg-slate-900 border border-slate-700 text-white px-4 py-2 rounded-xl text-sm font-bold focus:outline-none focus:border-orange-500">
                     <button onclick="window.submitLunchBid()" class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition transform hover:scale-105">입찰</button>
@@ -437,7 +437,7 @@
 
             <!-- 12시 10분 전까지 학생들에게는 이 영역이 숨겨집니다 -->
             <div id="lunchQueueWrapper" class="glass-panel p-2 sm:p-4 rounded-2xl hidden">
-                <h3 class="font-bold text-sm text-slate-300 mb-3 ml-2">오늘의 배식 순위 <span class="text-[10px] text-orange-400">(12시 10분 공개)</span></h3>
+                <h3 class="font-bold text-sm text-slate-300 mb-3 ml-2">오늘의 급식 순위 <span class="text-[10px] text-orange-400">(12시 10분 공개)</span></h3>
                 <div id="lunchQueueContainer" class="space-y-2">
                     <div class="text-slate-500 text-xs p-2">데이터 로딩 중...</div>
                 </div>
@@ -448,7 +448,7 @@
         <section id="adminSection" class="hidden">
             <div class="mb-4 flex justify-between items-end">
                 <div>
-                    <h2 class="text-2xl font-display text-sb-red"><i class="fa-solid fa-gear"></i> 마스터 통제구역 <span id="dbAdminStatus" class="text-[10px] text-orange-400 font-sans hidden"></span></h2>
+                    <h2 class="text-2xl font-display text-sb-red"><i class="fa-solid fa-gear"></i> 선생님 설정 창 <span id="dbAdminStatus" class="text-[10px] text-orange-400 font-sans hidden"></span></h2>
                 </div>
             </div>
 
@@ -456,13 +456,13 @@
             <div id="gmResetPanel" class="hidden bg-red-900/30 border border-red-500/50 p-4 rounded-xl mb-6 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
                 <h3 class="text-red-400 font-bold text-sm mb-1"><i class="fa-solid fa-triangle-exclamation"></i> 서버 초기화 (위험)</h3>
                 <p class="text-[10px] text-slate-300 mb-3">내일 새로운 마음으로 시작하기 위해 모든 학생의 XP, B, 아이템, 상태를 완전 0으로 돌립니다.</p>
-                <button onclick="window.hardResetAll()" class="w-full sm:w-auto bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-6 rounded-lg shadow-lg text-xs transition">모든 데이터 전면 초기화 실행</button>
+                <button onclick="window.hardResetAll()" class="w-full sm:w-auto bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-6 rounded-lg shadow-lg text-xs transition">초기화 실행</button>
             </div>
 
             <!-- ★ 일괄 처리 패널 (관리자 전용 패널들) 맨 위로 이동 ★ -->
             <div id="gmOnlyPanels" class="hidden space-y-4 mb-4">
                 <div class="glass-panel p-4 rounded-xl border border-sb-gold/50">
-                    <h3 class="text-white font-bold text-sm mb-3"><i class="fa-solid fa-wand-magic-sparkles text-sb-gold"></i> 일괄 처리</h3>
+                    <h3 class="text-white font-bold text-sm mb-3"><i class="fa-solid fa-wand-magic-sparkles text-sb-gold"></i> 전체 학생 관리</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- 세분화된 일괄 지급 5,10,30,50,100 -->
                         <div class="bg-slate-800/50 p-2.5 rounded border border-emerald-500/30 text-center">
@@ -508,17 +508,17 @@
 
             <!-- 레이드 출제 패널 -->
             <div class="glass-panel p-4 rounded-xl mb-4 border border-purple-500 bg-slate-900/80">
-                <div class="flex justify-between mb-3"><h3 class="text-white font-bold text-sm"><i class="fa-solid fa-skull-crossbones text-purple-400"></i> 레이드 세팅</h3><span id="raidAdminStatus" class="text-[10px] bg-slate-800 px-2 py-0.5 rounded border border-slate-600">대기중</span></div>
+                <div class="flex justify-between mb-3"><h3 class="text-white font-bold text-sm"><i class="fa-solid fa-skull-crossbones text-purple-400"></i> 레이드 출제</h3><span id="raidAdminStatus" class="text-[10px] bg-slate-800 px-2 py-0.5 rounded border border-slate-600">대기중</span></div>
                 <div class="space-y-3 mb-4" id="raidQuestionInputs"></div>
                 <div class="flex gap-2">
-                    <button onclick="window.saveRaidQuestions()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white text-[10px] py-2 rounded font-bold border border-slate-500">임시저장</button>
-                    <button onclick="window.openRaidLobby()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white text-[10px] py-2 rounded font-bold shadow-lg">로비 오픈</button>
-                    <button onclick="window.resetRaidForce()" class="bg-red-900/50 hover:bg-red-800 text-sb-red text-[10px] py-2 px-3 rounded font-bold border border-red-900">종료</button>
+                    <button onclick="window.saveRaidQuestions()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white text-[10px] py-2 rounded font-bold border border-slate-500">문제 저장</button>
+                    <button onclick="window.openRaidLobby()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white text-[10px] py-2 rounded font-bold shadow-lg">레이드 시작</button>
+                    <button onclick="window.resetRaidForce()" class="bg-red-900/50 hover:bg-red-800 text-sb-red text-[10px] py-2 px-3 rounded font-bold border border-red-900">강제 종료</button>
                 </div>
             </div>
 
             <div class="glass-panel p-4 rounded-xl mb-4 border border-sb-blue/50">
-                <h3 class="text-white font-bold text-sm mb-2"><i class="fa-solid fa-bullhorn text-sb-blue"></i> NPC 공지</h3>
+                <h3 class="text-white font-bold text-sm mb-2"><i class="fa-solid fa-bullhorn text-sb-blue"></i> 전체 공지사항</h3>
                 <div class="flex gap-2"><input type="text" id="gmAnnouncementInput" placeholder="메시지 입력" class="flex-1 bg-slate-900 border border-slate-700 text-white px-3 py-1.5 rounded text-[10px]"><button onclick="window.setAnnouncement()" class="bg-sb-blue text-white font-bold py-1.5 px-4 rounded text-[10px]">등록</button></div>
             </div>
 
@@ -954,7 +954,7 @@
             if(activeBtn) activeBtn.classList.add('active');
 
             if (autoSave) {
-                if (window.playerState.isGuest) return window.customAlert("게스트 모드입니다.");
+                if (window.playerState.isGuest) return window.customAlert("👀 게스트는 이용할 수 없어요.");
                 if (!selectedBody && window.playerState.condition) selectedBody = window.playerState.condition.body;
                 if (!selectedBody) selectedBody = BODY_STATES[2]; // 기본값: 보통
                 
@@ -973,7 +973,7 @@
             if(activeBtn) activeBtn.classList.add('active');
 
             if (autoSave) {
-                if (window.playerState.isGuest) return window.customAlert("게스트 모드입니다.");
+                if (window.playerState.isGuest) return window.customAlert("👀 게스트는 이용할 수 없어요.");
                 if (!selectedEmotion && window.playerState.condition) selectedEmotion = window.playerState.condition.emotion;
                 if (!selectedEmotion) selectedEmotion = EMOTIONS[0]; // 기본값: 기쁨
                 
@@ -1682,7 +1682,7 @@
         };
         
         window.logout = async function() { 
-            const isOk = await window.customConfirm("로그아웃 하시겠습니까?"); 
+            const isOk = await window.customConfirm("로그아웃 할까요?"); 
             if(isOk) { localStorage.clear(); location.reload(); } 
         };
 
@@ -1700,17 +1700,17 @@
                 if (data) {
                     if (!data.pin) {
                         if (isAutoLogin) return; 
-                        const isOk = await window.customConfirm(`[${STUDENT_NAMES[studentId]}]\n입력하신 [${pin}] 번호가 영구 비밀번호로 설정됩니다.\n접속하시겠습니까?`);
+                        const isOk = await window.customConfirm(`[${STUDENT_NAMES[studentId]}]\n입력하신 [${pin}] 번호가 앞으로 계속 쓸 비밀번호가 됩니다.\n이대로 접속할까요?`);
                         if(!isOk) return; 
                         data.pin = pin; 
                         await setDoc(docRef, { pin: pin }, { merge: true });
                     } else if (data.pin !== pin) {
                         if (isAutoLogin) { localStorage.clear(); location.reload(); return; }
-                        return await window.customAlert("❌ 비밀번호가 틀렸습니다!");
+                        return await window.customAlert("❌ 비밀번호가 틀렸어요!");
                     }
                 } else {
                     if (isAutoLogin) return; 
-                    const isOk = await window.customConfirm(`[${STUDENT_NAMES[studentId]}]\n입력하신 [${pin}] 번호가 영구 비밀번호로 설정됩니다.\n접속하시겠습니까?`);
+                    const isOk = await window.customConfirm(`[${STUDENT_NAMES[studentId]}]\n입력하신 [${pin}] 번호가 앞으로 계속 쓸 비밀번호가 됩니다.\n이대로 접속할까요?`);
                     if(!isOk) return;
                     
                     data = { pin, xp: 0, bong: 0.0, quests: {}, unlockedQuests: {}, jobs: [], ownedSkins: {}, equippedSkins: {}, inventory: [], equippedWeapon: null, hasShield: false, shieldHP: 0, lunchBid: {date: '', amount: 0} };
@@ -1784,16 +1784,16 @@
 
         // ★ 식권 입찰 처리 로직
         window.submitLunchBid = async function() {
-            if (window.playerState.isGuest) return window.customAlert("👀 게스트 모드입니다.");
-            if (window.playerState.isAdmin) return window.customAlert("마스터는 식권 경매에 참여할 수 없습니다.");
+            if (window.playerState.isGuest) return window.customAlert("👀 게스트는 이용할 수 없어요.");
+            if (window.playerState.isAdmin) return window.customAlert("선생님은 식권 경매에 참여할 수 없습니다.");
             
             const inputEl = document.getElementById('lunchBidInput');
             const amt = parseInt(inputEl.value);
             
-            if (isNaN(amt) || amt <= 0) return window.customAlert('정확한 금액을 입력하세요.');
-            if (window.playerState.bong < amt) return window.customAlert(`❌ 자산이 부족합니다. ${(amt - window.playerState.bong).toFixed(1)}B가 더 필요합니다.`);
+            if (isNaN(amt) || amt <= 0) return window.customAlert('정확한 금액을 입력해주세요.');
+            if (window.playerState.bong < amt) return window.customAlert(`❌ 돈이 부족해요. ${(amt - window.playerState.bong).toFixed(1)}B가 더 필요해요.`);
             
-            const ok = await window.customConfirm(`급식 우선 배식을 위해 추가 식권 ${amt}B를 결제하시겠습니까?\n(이미 입찰한 내역이 있다면 추가로 합산됩니다.)`);
+            const ok = await window.customConfirm(`급식을 먼저 먹기 위해 ${amt}B를 결제할까요?\n(이미 결제했다면 합산됩니다.)`);
             if (ok) {
                 window.playerState.bong -= amt;
                 
@@ -1809,7 +1809,7 @@
                 await saveDataToCloud();
                 playSfx('bong', false); // 비용 지불 효과음
                 
-                await window.customAlert(`✅ 추가 식권 결제 완료!\n오늘 총 ${window.playerState.lunchBid.amount}B를 입찰하셨습니다.\n밥줄 탭에서 실시간 배식 순위를 확인하세요.`);
+                await window.customAlert(`✅ 결제 완료!\n오늘 총 ${window.playerState.lunchBid.amount}B를 썼습니다.\n밥줄 탭에서 순위를 확인해보세요.`);
                 inputEl.value = '';
             }
         };
@@ -1819,7 +1819,7 @@
         // ★ 9. 퀘스트, 아이템 & 무기 로직 ★
         // ==========================================
         window.equipWeapon = async function(wpId) {
-            if (window.playerState.isGuest) return window.customAlert("👀 게스트 모드입니다.");
+            if (window.playerState.isGuest) return window.customAlert("👀 게스트는 이용할 수 없어요.");
             
             if (window.playerState.equippedWeapon === wpId) {
                 window.playerState.equippedWeapon = null; // 장착 해제
@@ -1860,16 +1860,16 @@
                 if (window.playerState.inventory.includes(dropped)) {
                     const comp = 10;
                     window.playerState.bong += comp;
-                    await window.customAlert(`🎁 퀘스트 보상으로 [${wp.emoji} ${wp.name}] 무기를 또 발견했습니다!\n하지만 이미 보유 중이라 중복 보상 ${comp} B로 변환되었습니다.`);
+                    await window.customAlert(`🎁 [${wp.emoji} ${wp.name}] 무기를 또 발견했어요!\n이미 가지고 있어서 ${comp} B로 바꿔서 드려요.`);
                 } else {
                     window.playerState.inventory.push(dropped);
-                    await window.customAlert(`🎉 [무기 드랍 대박!]\n새로운 무기 [${wp.emoji} ${wp.name}] (데미지 +${wp.bonus}) 을(를) 획득했습니다!\n상태 탭의 내 무기고에서 장착하세요.`);
+                    await window.customAlert(`🎉 [무기 획득!]\n새로운 무기 [${wp.emoji} ${wp.name}] (데미지 +${wp.bonus}) 을(를) 얻었어요!\n상태 탭의 인벤토리에서 장착해보세요.`);
                 }
             }
         }
 
         window.attemptQuest = async function(qId, xp, bong) {
-            if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드입니다.");
+            if (window.playerState.isGuest) return await window.customAlert("👀 게스트는 이용할 수 없어요.");
             if (window.playerState.quests[qId]) return;
 
             let finalXp = xp; 
@@ -1897,7 +1897,7 @@
             if (newLv > oldLv) { 
                 const bonus = newLv * 3; 
                 window.playerState.bong += bonus; 
-                await window.customAlert(`🎉 레벨업 축하합니다!\n보너스 자산 [${bonus} B] 지급!`); 
+                await window.customAlert(`🎉 레벨업을 축하해요!\n보너스 자산 [${bonus} B]를 드립니다!`); 
             }
             
             // 무기 드랍 체크
@@ -1909,7 +1909,7 @@
 
         window.cancelQuest = async function(qId, xp, bong) {
             if (window.playerState.isGuest) return;
-            const isOk = await window.customConfirm("퀘스트를 취소하시겠습니까?\n⚠️ 수수료(0.5 B) 차감");
+            const isOk = await window.customConfirm("퀘스트를 취소할까요?\n⚠️ 수수료(0.5 B)가 깎여요.");
             if (isOk) {
                 if (qId === 'q1') {
                     window.playerState.earlyBirdCount = Math.max(0, (window.playerState.earlyBirdCount || 1) - 1);
@@ -1923,15 +1923,15 @@
         };
 
         window.buyItem = async function(id, name, price, isConsumable) {
-            if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드입니다.");
+            if (window.playerState.isGuest) return await window.customAlert("👀 게스트는 이용할 수 없어요.");
             
             if (isConsumable) {
                 if (window.playerState.bong >= price || window.playerState.isAdmin) {
-                    let cMsg = `[${name}]을(를) ${price}B에 구매하시겠습니까?`;
+                    let cMsg = `[${name}] 아이템을 ${price}B에 살까요?`;
                     
                     if (id === 'item_shield') { 
                         const hp = (window.playerState.shieldHP || 0) + (window.playerState.hasShield ? 100 : 0); 
-                        cMsg = `[${name}]을(를) ${price}B에 구매하시겠습니까?\n(현재 방패 내구도: ${hp})`; 
+                        cMsg = `[${name}] 아이템을 ${price}B에 살까요?\n(현재 방패 내구도: ${hp})`; 
                     }
                     
                     const ok = await window.customConfirm(cMsg);
@@ -1947,16 +1947,16 @@
                         }
                     }
                 } else { 
-                    await window.customAlert(`❌ ${price - window.playerState.bong}B가 더 필요합니다.`); 
+                    await window.customAlert(`❌ 돈이 부족해요. ${(price - window.playerState.bong).toFixed(1)}B가 더 필요해요.`); 
                 }
             } else {
-                const msg = window.playerState.bong >= price || window.playerState.isAdmin ? `🎉 [구매 가능] 선생님에게 직접 신청하세요` : `❌ ${(price - window.playerState.bong).toFixed(1)}B가 더 필요합니다.`;
+                const msg = window.playerState.bong >= price || window.playerState.isAdmin ? `🎉 [구매 가능] 선생님께 말씀해주세요!` : `❌ 돈이 부족해요. ${(price - window.playerState.bong).toFixed(1)}B가 더 필요해요.`;
                 await window.customAlert(msg);
             }
         };
 
         window.toggleJob = async function(jobName, iconClass, colorClass) {
-            if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드입니다.");
+            if (window.playerState.isGuest) return await window.customAlert("👀 게스트는 이용할 수 없어요.");
             
             if (!window.playerState.jobs) window.playerState.jobs = [];
             const existingIndex = window.playerState.jobs.findIndex(j => j.name === jobName);
@@ -1973,7 +1973,7 @@
         };
 
         window.handleSkin = async function(skinId) {
-            if (window.playerState.isGuest) return await window.customAlert("👀 게스트 모드입니다.");
+            if (window.playerState.isGuest) return await window.customAlert("👀 게스트는 이용할 수 없어요.");
             const skin = SKIN_DATA.find(s => s.id === skinId);
             
             if(!window.playerState.ownedSkins) window.playerState.ownedSkins = {};
@@ -1990,7 +1990,7 @@
                 updateUI(); saveDataToCloud(); window.switchTab('plaza');
             } else {
                 if (window.playerState.bong >= skin.price || window.playerState.isAdmin) {
-                    const isOk = await window.customConfirm(`'${skin.name}'을(를) ${skin.price} B에 구매하시겠습니까?`);
+                    const isOk = await window.customConfirm(`스킨 '${skin.name}'을(를) ${skin.price} B에 살까요?`);
                     if (isOk) {
                         if (!window.playerState.isAdmin) window.playerState.bong -= skin.price;
                         window.playerState.ownedSkins[skinId] = true;
@@ -2002,11 +2002,11 @@
                         }
                         
                         window.playerState.equippedSkins[skinId] = true; 
-                        await window.customAlert(`🎉 획득 완료! 장착되었습니다.`); 
+                        await window.customAlert(`🎉 획득 완료! 바로 장착했어요.`); 
                         updateUI(); saveDataToCloud(); window.switchTab('plaza');
                     }
                 } else { 
-                    await window.customAlert(`❌ ${skin.price - window.playerState.bong}B가 더 필요합니다.`); 
+                    await window.customAlert(`❌ 돈이 부족해요. ${(skin.price - window.playerState.bong).toFixed(1)}B가 더 필요해요.`); 
                 }
             }
         };
@@ -2014,15 +2014,15 @@
         window.promptUnlock = async function(qId) {
             if (window.playerState.isGuest) return;
             const pw = window.globalSettings.raidPassword || "1234";
-            const code = await window.customPrompt(`전담 교사 비밀번호를 입력하세요:`, "password");
+            const code = await window.customPrompt(`전담 선생님 비밀번호를 입력하세요:`, "password");
             
             if (code === pw || code === "마스터J") { 
-                await window.customAlert("🔓 퀘스트가 활성화되었습니다!");
+                await window.customAlert("🔓 퀘스트가 열렸어요!");
                 if(!window.playerState.unlockedQuests) window.playerState.unlockedQuests = {};
                 window.playerState.unlockedQuests[qId] = true; 
                 updateUI(); saveDataToCloud();
             } else if (code !== null) {
-                await window.customAlert("❌ 비밀번호가 일치하지 않습니다.");
+                await window.customAlert("❌ 비밀번호가 틀렸어요.");
             }
         };
 
@@ -2031,7 +2031,7 @@
         // ★ 10. 관리자 권한 도구 모음 ★
         // ==========================================
         window.hardResetAll = async function() {
-            if (!window.playerState.isGM) return window.customAlert('마스터 J 전용 기능입니다.');
+            if (!window.playerState.isGM) return window.customAlert('선생님(마스터 J) 전용 기능입니다.');
             const ok1 = await window.customPrompt('⚠️ [위험] 모든 학생의 데이터가 0으로 영구 초기화됩니다.\n계속하시려면 "초기화확인"을 입력하세요:', 'text');
             if (ok1 !== "초기화확인") return;
             
@@ -2349,7 +2349,7 @@
         window.claimDragonBall = async function() {
             if (window.playerState.isGuest || !isWeekend) return;
             const st = window.dragonBallState; 
-            if (!st || !st.isActive) return window.customAlert("앗! 늦었습니다! 누군가 먼저 획득했습니다.");
+            if (!st || !st.isActive) return window.customAlert("앗! 다른 친구가 먼저 가져갔어요!");
             
             const nTime = Date.now() + (Math.floor(Math.random() * 50) + 10) * 60000;
             await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'dragonball', 'state'), { 
@@ -2490,7 +2490,7 @@
             
             if(!st || st.status !== 'recruiting' || !st.participants.includes(mId)) return;
             
-            const ok = await window.customConfirm("레이드 참가를 취소하시겠습니까?");
+            const ok = await window.customConfirm("레이드 참가를 취소할까요?");
             if(!ok) return;
 
             const np = st.participants.filter(id => id !== mId); 
@@ -2596,7 +2596,7 @@
         };
 
         window.giveUpRaid = async function() { 
-            const ok = await window.customConfirm("도망치겠습니까?"); 
+            const ok = await window.customConfirm("전투를 포기하고 도망갈까요?"); 
             if(ok) { 
                 window.closeRaidModal(); 
                 if (window.currentRaidState?.status === 'playing' && window.currentRaidState.participants[window.currentRaidState.currentTurn] === localStorage.getItem('sambong_student_id')) {
@@ -2737,7 +2737,7 @@
             if(nH <= 0) { 
                 nH = 0; 
                 nS = 'finished'; 
-                l.unshift(`토벌 완료!`); 
+                l.unshift(`보스 처치 성공!`); 
                 
                 const b = writeBatch(db); 
                 st.participants.forEach(pId => { 
@@ -2752,7 +2752,7 @@
                 await b.commit();
             } else if(nT >= 5) { 
                 nS = 'failed'; 
-                l.unshift(`전멸...`); 
+                l.unshift(`레이드 실패...`); 
             } else { 
                 l.unshift(`▶️ 다음: ${STUDENT_NAMES[st.participants[nT]]} 턴!`); 
             }
